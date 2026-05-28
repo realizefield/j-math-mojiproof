@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAMBA｜文字式の証明【各位の和と倍数判定】</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f4ef;--sf:#fff;--sf2:#f0ede6;--bd:#d6d2c8;--bd2:#bcb8ae;--pink:#d93652;--teal:#0d9478;--blue:#2055b0;--amber:#a86000;--purple:#7c3aed;--tl:#e6f5f1;--bl:#eaf0fb;--al:#fdf2dd;--pl:#fde8eb;--pul:#f3eeff;--text:#1a1814;--text2:#58544c;--text3:#98948c;--r:12px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;min-height:100vh;}
+.site-header{background:var(--sf);border-bottom:1px solid var(--bd);padding:.65rem 1.5rem;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+.logo{font-family:'Shippori Mincho',serif;font-size:1.05rem;color:var(--pink);}
+.logo-sep{color:var(--bd2);}
+.logo-sub{font-size:12px;color:var(--text2);}
+.tab-nav{background:var(--sf);border-bottom:2px solid var(--bd);position:sticky;top:46px;z-index:99;display:flex;padding:0 1rem;overflow-x:auto;}
+.tab-btn{padding:.7rem 1rem;font-size:12px;font-weight:500;color:var(--text2);background:none;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;display:flex;align-items:center;gap:5px;border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .15s;white-space:nowrap;flex-shrink:0;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active-ex{color:var(--pink);border-bottom-color:var(--pink);}
+.tab-btn.active-p1{color:var(--teal);border-bottom-color:var(--teal);}
+.tab-btn.active-p2{color:var(--blue);border-bottom-color:var(--blue);}
+.tab-btn.active-p3{color:var(--purple);border-bottom-color:var(--purple);}
+.tab-btn.active-p4{color:var(--amber);border-bottom-color:var(--amber);}
+.tab-btn.active-p5{color:var(--teal);border-bottom-color:var(--teal);}
+.tab-btn.active-p6{color:var(--pink);border-bottom-color:var(--pink);}
+.tab-pip{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
+.pip-ex{background:#fde8eb;color:var(--pink);}
+.pip-p1,.pip-p5{background:var(--tl);color:var(--teal);}
+.pip-p2,.pip-p4{background:var(--bl);color:var(--blue);}
+.pip-p3{background:var(--pul);color:var(--purple);}
+.pip-p6{background:#fde8eb;color:var(--pink);}
+.tab-done{width:14px;height:14px;border-radius:50%;background:var(--teal);color:#fff;font-size:8px;display:none;align-items:center;justify-content:center;}
+.page{display:none;animation:fadeTab .2s ease;}
+.page.active{display:block;}
+@keyframes fadeTab{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+main{max-width:720px;margin:0 auto;padding:1.5rem 1rem 6rem;}
+.page-hdr{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1rem 1.4rem;margin-bottom:1.4rem;display:flex;align-items:center;gap:12px;}
+.page-hdr-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:700;flex-shrink:0;}
+.icon-ex{background:var(--pink);color:#fff;}
+.icon-p1,.icon-p5{background:var(--teal);color:#fff;}
+.icon-p2,.icon-p4{background:var(--blue);color:#fff;}
+.icon-p3{background:var(--purple);color:#fff;}
+.icon-p6{background:var(--pink);color:#fff;}
+.page-hdr-body{flex:1;}
+.page-hdr-title{font-size:15px;font-weight:700;margin-bottom:2px;}
+.page-hdr-desc{font-size:12px;color:var(--text2);}
+/* 進捗バー */
+.prog-all{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:.8rem 1.2rem;margin-bottom:1.2rem;}
+.prog-all-label{font-size:11px;color:var(--text2);margin-bottom:.5rem;display:flex;justify-content:space-between;}
+.prog-dots{display:flex;gap:6px;}
+.pdot{width:22px;height:22px;border-radius:50%;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--text3);transition:all .3s;}
+.pdot.done{background:var(--teal);border-color:var(--teal);color:#fff;}
+.pdot.active{border-color:var(--blue);color:var(--blue);}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1.4rem 1.5rem;margin-bottom:1rem;}
+.clabel{font-size:11px;font-weight:700;letter-spacing:.1em;margin-bottom:.85rem;display:flex;align-items:center;gap:6px;}
+.clabel::before{content:'';width:3px;height:14px;border-radius:2px;display:inline-block;}
+.clabel.ex{color:var(--pink);}.clabel.ex::before{background:var(--pink);}
+.clabel.kai{color:var(--teal);}.clabel.kai::before{background:var(--teal);}
+.q-text{font-size:15px;line-height:1.95;color:var(--text);margin-bottom:1rem;}
+.point-box{background:var(--al);border:1px solid #e0c888;border-radius:9px;padding:.8rem 1.1rem;margin-bottom:.9rem;font-size:13px;color:var(--amber);line-height:1.9;}
+.point-box strong{display:block;font-size:10px;letter-spacing:.08em;margin-bottom:3px;}
+.exp-box{background:var(--sf2);border-radius:9px;padding:.9rem 1.15rem;margin-bottom:.75rem;border-left:3px solid var(--teal);animation:fadeIn .25s ease;}
+.exp-box h4{font-size:11px;color:var(--teal);font-weight:700;letter-spacing:.06em;margin-bottom:.5rem;}
+.exp-box p{font-size:14px;line-height:2;color:var(--text);}
+.exp-box.blue{border-color:var(--blue);}.exp-box.blue h4{color:var(--blue);}
+.exp-box.amber{border-color:var(--amber);}.exp-box.amber h4{color:var(--amber);}
+.exp-box.pink{border-color:var(--pink);}.exp-box.pink h4{color:var(--pink);}
+.exp-box.purple{border-color:var(--purple);}.exp-box.purple h4{color:var(--purple);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.reveal-btn{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-top:.2rem;transition:background .15s;}
+.reveal-btn:hover{background:#0b7560;}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:1rem;}
+.ch{background:var(--sf2);border:1.5px solid var(--bd);border-radius:9px;padding:10px 8px;font-size:13px;color:var(--text);cursor:pointer;display:flex;align-items:flex-start;gap:8px;transition:all .15s;font-family:'Noto Sans JP',sans-serif;width:100%;line-height:1.6;}
+.ch:hover:not(:disabled){border-color:var(--blue);background:var(--bl);}
+.ch:disabled{cursor:default;}
+.ch.ok{border-color:var(--teal);background:var(--tl);color:var(--teal);}
+.ch.ng{border-color:var(--pink);background:var(--pl);color:var(--pink);}
+.ch.selected{border-color:var(--blue);background:var(--bl);color:var(--blue);}
+.cnum{width:24px;height:24px;border-radius:50%;background:var(--bd);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.ch.ok .cnum{background:var(--teal);color:#fff;}
+.ch.ng .cnum{background:var(--pink);color:#fff;}
+.hint-toggle{background:none;border:1px dashed var(--bd);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text2);cursor:pointer;margin-bottom:.75rem;font-family:'Noto Sans JP',sans-serif;transition:all .15s;}
+.hint-toggle:hover{border-color:var(--blue);color:var(--blue);}
+.hint-box{background:var(--bl);border:1px solid #a8c0e8;border-radius:9px;padding:.75rem 1rem;margin-bottom:.85rem;font-size:13px;color:var(--blue);line-height:1.9;display:none;}
+.abc-wrap{margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--bd);}
+.abc-lbl{font-size:12px;color:var(--text2);margin-bottom:.7rem;}
+.abc-row{display:flex;gap:7px;}
+.abc-btn{flex:1;padding:9px 5px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;border:2px solid;transition:all .15s;font-family:'Noto Sans JP',sans-serif;text-align:center;line-height:1.3;}
+.abc-btn span{display:block;font-size:10px;font-weight:400;margin-top:2px;opacity:.85;}
+.abc-A{border-color:var(--teal);color:var(--teal);background:var(--tl);}
+.abc-A:hover,.abc-A.on{background:var(--teal);color:#fff;}
+.abc-B{border-color:var(--blue);color:var(--blue);background:var(--bl);}
+.abc-B:hover,.abc-B.on{background:var(--blue);color:#fff;}
+.abc-C{border-color:var(--amber);color:var(--amber);background:var(--al);}
+.abc-C:hover,.abc-C.on{background:var(--amber);color:#fff;}
+.cf-judge-btn{width:100%;padding:13px;background:var(--amber);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-bottom:1rem;transition:background .15s;display:none;}
+.cf-judge-btn:hover{background:#8a5000;}
+.cf-judge-btn.active{display:block;}
+.cf-result-ok{background:var(--tl);border:2px solid var(--teal);border-radius:10px;padding:1.2rem;text-align:center;font-size:20px;font-weight:900;color:var(--teal);margin-bottom:1rem;display:none;animation:popIn .4s ease;}
+.cf-result-ng{background:var(--pl);border:2px solid var(--pink);border-radius:10px;padding:1rem;text-align:center;font-size:18px;font-weight:900;color:var(--pink);margin-bottom:1rem;display:none;animation:popIn .4s ease;}
+@keyframes popIn{0%{transform:scale(.7);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.fb-ok{display:none;align-items:center;gap:12px;background:#e6faf3;border:2px solid #0d9478;border-radius:12px;padding:12px 16px;margin:8px 0 4px;animation:fbPop .3s ease;}
+.fb-ng{display:none;align-items:center;gap:12px;background:#fde8eb;border:2px solid #d93652;border-radius:12px;padding:12px 16px;margin:8px 0 4px;animation:fbPop .3s ease;}
+@keyframes fbPop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.reset-btn{background:none;border:1.5px solid #d93652;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;color:#d93652;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-left:auto;flex-shrink:0;transition:all .15s;white-space:nowrap;}
+.reset-btn:hover{background:#d93652;color:#fff;}
+.fb-icon{font-size:1.7rem;flex-shrink:0;}
+.fb-text{font-size:13px;font-weight:700;line-height:1.5;}
+.fb-ok .fb-text{color:#0d9478;}
+.fb-ng .fb-text{color:#d93652;}
+.fb-sub{font-size:11px;font-weight:400;display:block;margin-top:1px;opacity:.8;}
+.next-tab-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:var(--teal);border:none;border-radius:var(--r);font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:background .15s;margin-top:.5rem;}
+.next-tab-btn:hover{background:#0b7560;}
+.proof-box{background:#f8f6ff;border:2px solid #8b6fd4;border-radius:10px;padding:1rem 1.3rem;margin:.8rem 0;font-size:14px;line-height:2.1;}
+.proof-box .proof-title{font-size:10px;font-weight:700;color:#8b6fd4;letter-spacing:.08em;margin-bottom:.5rem;}
+.form-hl{display:inline-block;background:#fff3cd;border:1.5px solid #ffc107;border-radius:6px;padding:3px 10px;font-weight:700;color:#856404;font-size:14px;}
+.form-hl-teal{display:inline-block;background:#e6faf3;border:1.5px solid var(--teal);border-radius:6px;padding:3px 10px;font-weight:700;color:var(--teal);font-size:14px;}
+.form-hl-purple{display:inline-block;background:var(--pul);border:1.5px solid var(--purple);border-radius:6px;padding:3px 10px;font-weight:700;color:var(--purple);font-size:14px;}
+.pt-label{display:inline-flex;align-items:center;gap:5px;background:#fff3cd;border:1px solid #ffc107;color:#856404;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:700;letter-spacing:.06em;vertical-align:middle;margin-left:4px;}
+/* 変数バッジ */
+.var-badge{display:inline-flex;gap:6px;margin:.5rem 0;}
+.vb{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;font-size:.9rem;font-weight:900;}
+.vb-a{background:#fde8eb;color:var(--pink);}
+.vb-b{background:var(--bl);color:var(--blue);}
+.vb-d{background:var(--tl);color:var(--teal);}
+.vb-x{background:var(--pul);color:var(--purple);}
+.vb-y{background:var(--al);color:var(--amber);}
+.vb-z{background:#f0ede6;color:var(--text2);}
+.vb-p{background:#fde8eb;color:var(--pink);}
+.vb-q{background:var(--bl);color:var(--blue);}
+.vb-r{background:var(--tl);color:var(--teal);}
+/* タイマー */
+.timer-wrap{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+.timer-ring{position:relative;width:48px;height:48px;flex-shrink:0;}
+.timer-ring svg{width:48px;height:48px;transform:rotate(-90deg);}
+circle{fill:none;stroke-width:3;stroke-linecap:round;}
+.tbg{stroke:var(--bd2);}
+.tfg{stroke:var(--teal);transition:stroke-dashoffset .9s linear;stroke-dasharray:126;stroke-dashoffset:0;}
+.tfg.warn{stroke:var(--amber);}
+.tcenter{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text2);font-family:'DM Mono',monospace;}
+.timer-msg{font-size:13px;color:var(--text2);line-height:1.5;}
+.timer-msg .goal{color:var(--teal);font-weight:500;}
+/* 合格モーダル */
+.pass-modal{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;background:rgba(0,0,0,.45);}
+.pass-modal.show{display:flex;}
+.pass-modal-inner{background:#fff;border-radius:20px;padding:2.5rem 2rem;text-align:center;max-width:340px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:passIn .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes passIn{from{transform:scale(.6) translateY(30px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.pass-title{font-size:2.2rem;font-weight:900;color:var(--teal);margin-bottom:.2rem;}
+.pass-sub{font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:.6rem;}
+.pass-msg{font-size:13px;color:var(--text2);line-height:1.85;margin-bottom:1.3rem;}
+.pass-close{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
+.unit-nav{display:none;flex-direction:column;gap:10px;margin:1.8rem 0 0;padding-top:1.4rem;border-top:2px dashed #d6d2c8;}
+.unit-nav-row{display:flex;gap:8px;flex-wrap:wrap;}
+.unav-btn{flex:1;min-width:120px;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;border:2px solid;font-family:'Noto Sans JP',sans-serif;transition:all .15s;text-align:center;}
+.unav-index{background:#fff;border-color:#d6d2c8;color:#58544c;}
+.unav-index:hover{border-color:#2055b0;color:#2055b0;background:#eaf0fb;}
+.unav-prev{background:#f0ede6;border-color:#bcb8ae;color:#58544c;}
+.unav-prev:hover{border-color:#0d9478;color:#0d9478;}
+
+/* ページナビゲーション */
+.page-nav{display:flex;flex-direction:column;gap:8px;margin:1.6rem 0 0;padding-top:1.4rem;border-top:2px dashed var(--bd);}
+.page-nav-row{display:flex;gap:8px;}
+.pnav-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px 10px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;border:2px solid;font-family:'Noto Sans JP',sans-serif;transition:all .15s;text-align:center;background:none;}
+.pnav-next{background:var(--teal);border-color:var(--teal);color:#fff;}
+.pnav-next:hover{background:#0b7560;border-color:#0b7560;}
+.pnav-index{border-color:var(--bd);color:var(--text2);background:var(--sf);}
+.pnav-index:hover{border-color:var(--blue);color:var(--blue);background:var(--bl);}
+.pnav-ex{border-color:var(--pink);color:var(--pink);background:var(--pl);}
+.pnav-ex:hover{background:var(--pink);color:#fff;}
+
+/* 単元表に戻るフッターボタン */
+.index-footer{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.95);border-top:1px solid #d6d2c8;padding:8px 16px;display:flex;justify-content:center;z-index:200;backdrop-filter:blur(4px);}
+.index-footer-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 22px;background:#2055b0;color:#fff;border:none;border-radius:20px;font-size:13px;font-weight:700;text-decoration:none;font-family:'Noto Sans JP',sans-serif;transition:background .15s;cursor:pointer;}
+.index-footer-btn:hover{background:#153a80;}
+</style>
+</head>
+<body>
+
+<div class="pass-modal" id="pass-modal">
+  <div class="pass-modal-inner">
+    <div style="font-size:3rem;margin-bottom:.3rem;">🌸</div>
+    <div class="pass-title">合格！</div>
+    <div class="pass-sub">がんばったね</div>
+    <div class="pass-msg">6パターンすべてマスターしましたね！<br>各位の和と倍数判定の証明，<br>完璧です！</div>
+    <button class="pass-close" onclick="closePassModal()">とじる</button>
+  </div>
+</div>
+<canvas id="sakura-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;display:none;"></canvas>
+
+<header class="site-header">
+  <span class="logo">GAMBA</span><span class="logo-sep">|</span>
+  <span class="logo-sub">文字式の証明【各位の和と倍数判定】</span>
+</header>
+<nav class="tab-nav">
+  <button class="tab-btn active-ex" id="tab-ex" onclick="switchTab('ex')"><span class="tab-pip pip-ex">例</span>例題</button>
+  <button class="tab-btn" id="tab-p1" onclick="switchTab('p1')"><span class="tab-pip pip-p1">1</span>a,b,d<span class="tab-done" id="done-p1">✓</span></button>
+  <button class="tab-btn" id="tab-p2" onclick="switchTab('p2')"><span class="tab-pip pip-p2">2</span>a,b,d・9<span class="tab-done" id="done-p2">✓</span></button>
+  <button class="tab-btn" id="tab-p3" onclick="switchTab('p3')"><span class="tab-pip pip-p3">3</span>x,y,z<span class="tab-done" id="done-p3">✓</span></button>
+  <button class="tab-btn" id="tab-p4" onclick="switchTab('p4')"><span class="tab-pip pip-p4">4</span>x,y,z・9<span class="tab-done" id="done-p4">✓</span></button>
+  <button class="tab-btn" id="tab-p5" onclick="switchTab('p5')"><span class="tab-pip pip-p5">5</span>p,q,r<span class="tab-done" id="done-p5">✓</span></button>
+  <button class="tab-btn" id="tab-p6" onclick="switchTab('p6')"><span class="tab-pip pip-p6">6</span>p,q,r・9<span class="tab-done" id="done-p6">✓</span></button>
+</nav>
+<main>
+
+<!-- ══ 例題 ══ -->
+<div class="page active" id="page-ex">
+  <div class="page-hdr">
+    <div class="page-hdr-icon icon-ex">例</div>
+    <div class="page-hdr-body">
+      <div class="page-hdr-title">例題 ─ 各位の和と倍数判定の証明を学びましょう</div>
+      <div class="page-hdr-desc">文字式の証明 ／ 中学2年　教科書掲載パターン</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel ex">例題</div>
+    <div class="point-box">
+      <strong>📌 このページで学ぶこと</strong>
+      3桁の整数 100a + 10b + c を変形して，<br>
+      <span class="form-hl">99a + 9b + (a + b + c)</span> の形をつくることが核心です。<br><br>
+      ✅ <strong>3の倍数判定：</strong>a + b + c が 3 の倍数 → 整数も 3 の倍数<br>
+      ✅ <strong>9の倍数判定：</strong>a + b + c が 9 の倍数 → 整数も 9 の倍数<br><br>
+      🔑 <strong>ポイント：</strong>100 = 99 + 1，10 = 9 + 1 と分解するのが変形の鍵です！
+    </div>
+
+    <div class="q-text">
+      3桁の整数の各位の数の和が 3 の倍数ならば，その整数も 3 の倍数であることを証明しなさい。
+    </div>
+
+    <div id="ex-s0" class="exp-box" style="display:none">
+      <h4>STEP 1　3桁の整数を文字式で表しましょう</h4>
+      <p>百の位を a，十の位を b，一の位を c とおくと，<br>
+3桁の整数は <strong>100a + 10b + c</strong> と表せます。<br><br>
+各位の数の和は <strong>a + b + c</strong> です。</p>
+    </div>
+
+    <div id="ex-s1" class="exp-box blue" style="display:none">
+      <h4>STEP 2　100 と 10 を分解しましょう <span class="pt-label">ここが核心です！</span></h4>
+      <p>100 = 99 + 1，10 = 9 + 1 と分解して，<br>
+100a + 10b + c を変形します。<br><br>
+100a + 10b + c<br>
+= (99 + 1)a + (9 + 1)b + c<br>
+= 99a + a + 9b + b + c<br>
+= <strong>99a + 9b + (a + b + c)</strong><br><br>
+これで「各位の和 a + b + c」が現れました！</p>
+    </div>
+
+    <div id="ex-s2" class="exp-box amber" style="display:none">
+      <h4>STEP 3　3 の倍数であることを示しましょう</h4>
+      <p>99a + 9b + (a + b + c) を見ると，<br><br>
+・ 99a = 3 × 33a → 3 の倍数<br>
+・ 9b = 3 × 3b　→ 3 の倍数<br>
+・ a + b + c　　→ 3 の倍数（条件より）<br><br>
+3つすべてが 3 の倍数ですから，和も 3 の倍数です。<br><br>
+99a + 9b + (a + b + c) = <strong>3(33a + 3b) + (a + b + c)</strong><br><br>
+a + b + c が 3 の倍数のとき，全体は 3 の倍数です。</p>
+      <div class="proof-box" style="margin-top:.9rem;">
+        <div class="proof-title">【証明】</div>
+        百の位を a，十の位を b，一の位を c とおく。<br>
+        3桁の整数は 100a + 10b + c と表せる。<br><br>
+        100a + 10b + c<br>
+        = (99 + 1)a + (9 + 1)b + c<br>
+        = 99a + 9b + (a + b + c)<br>
+        = <strong>3(33a + 3b) + (a + b + c)</strong><br><br>
+        3(33a + 3b) は 3 の倍数であり，a + b + c も 3 の倍数だから，<br>
+        100a + 10b + c は <strong>3 の倍数</strong>である。　■
+      </div>
+    </div>
+
+    <div id="ex-s3" class="exp-box purple" style="display:none">
+      <h4>STEP 4　9の倍数判定への応用</h4>
+      <p>同じ変形で 9 の倍数判定もできます。<br><br>
+99a + 9b + (a + b + c) = <strong>9(11a + b) + (a + b + c)</strong><br><br>
+9(11a + b) は 9 の倍数ですから，<br>
+a + b + c が 9 の倍数ならば，全体も 9 の倍数になります。<br><br>
+✅ <strong>まとめ：</strong>変形の核心は<br>
+「100a + 10b + c = 99a + 9b + (a + b + c)」<br>
+この式さえ導けれれば，3・9 どちらの証明もできます！</p>
+    </div>
+
+    <button class="reveal-btn" id="rb-ex" onclick="revealEx(4)">STEP 1 を見る ▼</button>
+    <div id="ex-fin" style="display:none">
+      <div class="abc-wrap"><div class="abc-lbl">理解度をマークしてください</div><div class="abc-row">
+        <button class="abc-btn abc-A" id="ex-kA" onclick="setMark('exk','A')">✅ A<span>わかった</span></button>
+        <button class="abc-btn abc-B" id="ex-kB" onclick="setMark('exk','B')">📖 B<span>解説でわかった</span></button>
+        <button class="abc-btn abc-C" id="ex-kC" onclick="setMark('exk','C')">❓ C<span>わからなかった</span></button>
+      </div></div>
+      <button class="next-tab-btn" onclick="switchTab('p1')" style="margin-top:1.4rem;">練習1へ進む → (a, b, d の3の倍数)</button>
+    </div>
+    <div class="page-nav"><div class="page-nav-row"><a href="index_MA.html" class="pnav-btn pnav-index">📋 単元表に戻る</a></div></div>
+  </div>
+</div>
+
+<!-- ══ 練習ページ生成（6パターン） ══ -->
+<!-- パターン定義: [タブID, 変数1, 変数2, 変数3, 倍数, 次タブ, 次ラベル] -->
+
+<!-- P1: a,b,d の3の倍数 -->
+<div class="page" id="page-p1">
+  <div class="page-hdr">
+    <div class="page-hdr-icon icon-p1">1</div>
+    <div class="page-hdr-body">
+      <div class="page-hdr-title">練習①　変数 a, b, d で 3 の倍数を証明しましょう</div>
+      <div class="page-hdr-desc">例題と同じパターン ／ 変数が変わるだけです</div>
+    </div>
+  </div>
+  <div class="prog-all">
+    <div class="prog-all-label"><span>全体の進捗</span><span id="prog-txt">0 / 6 完了</span></div>
+    <div class="prog-dots">
+      <div class="pdot active" id="dot-p1">1</div><div class="pdot" id="dot-p2">2</div><div class="pdot" id="dot-p3">3</div>
+      <div class="pdot" id="dot-p4">4</div><div class="pdot" id="dot-p5">5</div><div class="pdot" id="dot-p6">6</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel ex">練習①　3の倍数</div>
+    <div class="var-badge"><span class="vb vb-a">a</span><span class="vb vb-b">b</span><span class="vb vb-d">d</span></div>
+    <div class="q-text">
+      3桁の整数の各位の数の和（a + b + d）が 3 の倍数ならば，その整数も 3 の倍数であることを証明しなさい。<br>
+      <small style="color:var(--text2);">（百の位：a，十の位：b，一の位：d）</small>
+    </div>
+    <div class="point-box"><strong>📌 着眼点</strong>
+      100a + 10b + d を変形して，<br>
+      <span class="form-hl">99a + 9b + (a + b + d)</span> の形をつくりましょう。
+    </div>
+    <button class="hint-toggle" onclick="toggleHint('h-p1')">💡 ヒントを見る</button>
+    <div class="hint-box" id="h-p1">100 = 99 + 1，10 = 9 + 1 と分解します。<br>
+      100a + 10b + d = 99a + 9b + (a + b + d) = 3(33a + 3b) + (a + b + d)</div>
+    <div class="choices" id="ch-p1">
+      <button class="ch" onclick="ansP('p1',0,2)"><span class="cnum">1</span><span>100a+10b+d<br>= 99a+9b+(a+b+d)<br>（くくらずに終わり）</span></button>
+      <button class="ch" onclick="ansP('p1',1,2)"><span class="cnum">2</span><span>100a+10b+d<br>= 9(11a+b)+(a+b+d)</span></button>
+      <button class="ch" onclick="ansP('p1',2,2)"><span class="cnum">3</span><span>100a+10b+d<br>= 99a+9b+(a+b+d)<br>= 3(33a+3b)+(a+b+d)</span></button>
+      <button class="ch" onclick="ansP('p1',3,2)"><span class="cnum">4</span><span>100a+10b+d<br>= 100a+10b+d<br>（変形なし）</span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-p1"><span class="fb-icon">🎉</span><span class="fb-text">正解！<span class="fb-sub">3(33a+3b)+(a+b+d) の形をつくれましたね ✨</span></span></div>
+    <div class="fb-ng" id="fb-ng-p1"><span class="fb-icon">😢</span><span class="fb-text">おしい！<span class="fb-sub">💡 99a+9b+(a+b+d) をさらに 3 でくくりましょう</span></span><button class="reset-btn" onclick="resetP('p1')">🔄 もう一度</button></div>
+    <div id="p1-res" style="display:none">
+      <div class="proof-box">
+        <div class="proof-title">【証明】</div>
+        100a + 10b + d<br>= 99a + 9b + (a + b + d)<br>= <strong>3(33a + 3b) + (a + b + d)</strong><br><br>
+        3(33a + 3b) は 3 の倍数であり，a + b + d も 3 の倍数だから，整数は <strong>3 の倍数</strong>である。　■
+      </div>
+      <div class="abc-wrap"><div class="abc-lbl">理解度をマークしてください</div><div class="abc-row">
+        <button class="abc-btn abc-A" id="p1-mA" onclick="setMark('p1m','A')">✅ A<span>わかった</span></button>
+        <button class="abc-btn abc-B" id="p1-mB" onclick="setMark('p1m','B')">📖 B<span>解説でわかった</span></button>
+        <button class="abc-btn abc-C" id="p1-mC" onclick="setMark('p1m','C')">❓ C<span>わからなかった</span></button>
+      </div></div>
+      <button class="next-tab-btn" onclick="switchTab('p2')" style="margin-top:1rem;">練習②へ進む →</button>
+    </div>
+    <div class="page-nav"><div class="page-nav-row"><button class="pnav-btn pnav-ex" onclick="switchTab('ex')">📖 例題に戻る</button><a href="index_MA.html" class="pnav-btn pnav-index">📋 単元表に戻る</a></div></div>
+  </div>
+</div>
+
+<!-- P2: a,b,d の9の倍数 -->
+<div class="page" id="page-p2">
+  <div class="page-hdr">
+    <div class="page-hdr-icon icon-p2">2</div>
+    <div class="page-hdr-body">
+      <div class="page-hdr-title">練習②　変数 a, b, d で 9 の倍数を証明しましょう</div>
+      <div class="page-hdr-desc">練習①と同じ変数 ／ 今度は 9 の倍数</div>
+    </div>
+  </div>
+  <div class="prog-all">
+    <div class="prog-all-label"><span>全体の進捗</span><span id="prog-txt2">1 / 6 完了</span></div>
+    <div class="prog-dots">
+      <div class="pdot done" id="dot2-p1">✓</div><div class="pdot active" id="dot2-p2">2</div><div class="pdot" id="dot2-p3">3</div>
+      <div class="pdot" id="dot2-p4">4</div><div class="pdot" id="dot2-p5">5</div><div class="pdot" id="dot2-p6">6</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel ex">練習②　9の倍数</div>
+    <div class="var-badge"><span class="vb vb-a">a</span><span class="vb vb-b">b</span><span class="vb vb-d">d</span></div>
+    <div class="q-text">
+      3桁の整数の各位の数の和（a + b + d）が 9 の倍数ならば，その整数も 9 の倍数であることを証明しなさい。<br>
+      <small style="color:var(--text2);">（百の位：a，十の位：b，一の位：d）</small>
+    </div>
+    <div class="point-box"><strong>📌 着眼点</strong>
+      100a + 10b + d を変形して，<span class="form-hl">99a + 9b + (a + b + d)</span> の形をつくりましょう。<br>
+      今度は <span class="form-hl-purple">9(11a + b) + (a + b + d)</span> の形にくくります。
+    </div>
+    <button class="hint-toggle" onclick="toggleHint('h-p2')">💡 ヒントを見る</button>
+    <div class="hint-box" id="h-p2">99 = 9 × 11，9 = 9 × 1 ですから，<br>
+      99a + 9b + (a+b+d) = 9(11a+b) + (a+b+d)</div>
+    <div class="choices" id="ch-p2">
+      <button class="ch" onclick="ansP('p2',0,1)"><span class="cnum">1</span><span>100a+10b+d<br>= 3(33a+3b)+(a+b+d)</span></button>
+      <button class="ch" onclick="ansP('p2',1,1)"><span class="cnum">2</span><span>100a+10b+d<br>= 99a+9b+(a+b+d)<br>= 9(11a+b)+(a+b+d)</span></button>
+      <button class="ch" onclick="ansP('p2',2,1)"><span class="cnum">3</span><span>100a+10b+d<br>= 9(11a+b+d)</span></button>
+      <button class="ch" onclick="ansP('p2',3,1)"><span class="cnum">4</span><span>100a+10b+d<br>= 99a+9b+(a+b+d)<br>（くくらずに終わり）</span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-p2"><span class="fb-icon">🎉</span><span class="fb-text">正解！<span class="fb-sub">9(11a+b)+(a+b+d) の形をつくれましたね ✨</span></span></div>
+    <div class="fb-ng" id="fb-ng-p2"><span class="fb-icon">😢</span><span class="fb-text">おしい！<span class="fb-sub">💡 99 = 9×11，9 = 9×1 として 9 でくくりましょう</span></span><button class="reset-btn" onclick="resetP('p2')">🔄 もう一度</button></div>
+    <div id="p2-res" style="display:none">
+      <div class="proof-box">
+        <div class="proof-title">【証明】</div>
+        100a + 10b + d<br>= 99a + 9b + (a + b + d)<br>= <strong>9(11a + b) + (a + b + d)</strong><br><br>
+        9(11a + b) は 9 の倍数であり，a + b + d も 9 の倍数だから，整数は <strong>9 の倍数</strong>である。　■
+      </div>
+      <div class="abc-wrap"><div class="abc-lbl">理解度をマークしてください</div><div class="abc-row">
+        <button class="abc-btn abc-A" id="p2-mA" onclick="setMark('p2m','A')">✅ A<span>わかった</span></button>
+        <button class="abc-btn abc-B" id="p2-mB" onclick="setMark('p2m','B')">📖 B<span>解説でわかった</span></button>
+        <button class="abc-btn abc-C" id="p2-mC" onclick="setMark('p2m','C')">❓ C<span>わからなかった</span></button>
+      </div></div>
+      <button class="next-tab-btn" onclick="switchTab('p3')" style="margin-top:1rem;">練習③へ進む →</button>
+    </div>
+    <div class="page-nav"><div class="page-nav-row"><button class="pnav-btn pnav-ex" onclick="switchTab('ex')">📖 例題に戻る</button><a href="index_MA.html" class="pnav-btn pnav-index">📋 単元表に戻る</a></div></div>
+  </div>
+</div>
+
+<!-- P3: x,y,z の3の倍数 -->
+<div class="page" id="page-p3">
+  <div class="page-hdr">
+    <div class="page-hdr-icon icon-p3">3</div>
+    <div class="page-hdr-body">
+      <div class="page-hdr-title">練習③　変数 x, y, z で 3 の倍数を証明しましょう</div>
+      <div class="page-hdr-desc">変数が変わっても証明の形は同じです</div>
+    </div>
+  </div>
+  <div class="prog-all">
+    <div class="prog-all-label"><span>全体の進捗</span><span id="prog-txt3">2 / 6 完了</span></div>
+    <div class="prog-dots">
+      <div class="pdot done">✓</div><div class="pdot done">✓</div><div class="pdot active">3</div>
+      <div class="pdot" id="dot3-p4">4</div><div class="pdot" id="dot3-p5">5</div><div class="pdot" id="dot3-p6">6</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel ex">練習③　3の倍数</div>
+    <div class="var-badge"><span class="vb vb-x">x</span><span class="vb vb-y">y</span><span class="vb vb-z">z</span></div>
+    <div class="q-text">
+      3桁の整数の各位の数の和（x + y + z）が 3 の倍数ならば，その整数も 3 の倍数であることを証明しなさい。<br>
+      <small style="color:var(--text2);">（百の位：x，十の位：y，一の位：z）</small>
+    </div>
+    <div class="point-box"><strong>📌 着眼点</strong>
+      100x + 10y + z を変形して，<span class="form-hl">99x + 9y + (x + y + z)</span> の形をつくりましょう。
+    </div>
+    <button class="hint-toggle" onclick="toggleHint('h-p3')">💡 ヒントを見る</button>
+    <div class="hint-box" id="h-p3">100x + 10y + z = 99x + 9y + (x+y+z) = 3(33x+3y) + (x+y+z)</div>
+    <div class="choices" id="ch-p3">
+      <button class="ch" onclick="ansP('p3',0,2)"><span class="cnum">1</span><span>100x+10y+z<br>= 9(11x+y)+(x+y+z)</span></button>
+      <button class="ch" onclick="ansP('p3',1,2)"><span class="cnum">2</span><span>100x+10y+z<br>= 99x+9y+(x+y+z)<br>（くくらずに終わり）</span></button>
+      <button class="ch" onclick="ansP('p3',2,2)"><span class="cnum">3</span><span>100x+10y+z<br>= 99x+9y+(x+y+z)<br>= 3(33x+3y)+(x+y+z)</span></button>
+      <button class="ch" onclick="ansP('p3',3,2)"><span class="cnum">4</span><span>100x+10y+z<br>= 3(100x+10y+z)</span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-p3"><span class="fb-icon">🎉</span><span class="fb-text">正解！<span class="fb-sub">変数が変わっても同じ形でできましたね ✨</span></span></div>
+    <div class="fb-ng" id="fb-ng-p3"><span class="fb-icon">😢</span><span class="fb-text">おしい！<span class="fb-sub">💡 変数が x,y,z でも変形の手順は全く同じです</span></span><button class="reset-btn" onclick="resetP('p3')">🔄 もう一度</button></div>
+    <div id="p3-res" style="display:none">
+      <div class="proof-box">
+        <div class="proof-title">【証明】</div>
+        100x + 10y + z<br>= 99x + 9y + (x + y + z)<br>= <strong>3(33x + 3y) + (x + y + z)</strong><br><br>
+        3(33x + 3y) は 3 の倍数であり，x + y + z も 3 の倍数だから，整数は <strong>3 の倍数</strong>である。　■
+      </div>
+      <div class="abc-wrap"><div class="abc-lbl">理解度をマークしてください</div><div class="abc-row">
+        <button class="abc-btn abc-A" id="p3-mA" onclick="setMark('p3m','A')">✅ A<span>わかった</span></button>
+        <button class="abc-btn abc-B" id="p3-mB" onclick="setMark('p3m','B')">📖 B<span>解説でわかった</span></button>
+        <button class="abc-btn abc-C" id="p3-mC" onclick="setMark('p3m','C')">❓ C<span>わからなかった</span></button>
+      </div></div>
+      <button class="next-tab-btn" onclick="switchTab('p4')" style="margin-top:1rem;">練習④へ進む →</button>
+    </div>
+    <div class="page-nav"><div class="page-nav-row"><button class="pnav-btn pnav-ex" onclick="switchTab('ex')">📖 例題に戻る</button><a href="index_MA.html" class="pnav-btn pnav-index">📋 単元表に戻る</a></div></div>
+  </div>
+</div>
+
+<!-- P4: x,y,z の9の倍数 -->
+<div class="page" id="page-p4">
+  <div class="page-hdr">
+    <div class="page-hdr-icon icon-p4">4</div>
+    <div class="page-hdr-body">
+      <div class="page-hdr-title">練習④　変数 x, y, z で 9 の倍数を証明しましょう</div>
+      <div class="page-hdr-desc">練習③と同じ変数 ／ 今度は 9 の倍数</div>
+    </div>
+  </div>
+  <div class="prog-all">
+    <div class="prog-all-label"><span>全体の進捗</span><span id="prog-txt4">3 / 6 完了</span></div>
+    <div class="prog-dots">
+      <div class="pdot done">✓</div><div class="pdot done">✓</div><div class="pdot done">✓</div>
+      <div class="pdot active">4</div><div class="pdot" id="dot4-p5">5</div><div class="pdot" id="dot4-p6">6</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel ex">練習④　9の倍数</div>
+    <div class="var-badge"><span class="vb vb-x">x</span><span class="vb vb-y">y</span><span class="vb vb-z">z</span></div>
+    <div class="q-text">
+      3桁の整数の各位の数の和（x + y + z）が 9 の倍数ならば，その整数も 9 の倍数であることを証明しなさい。<br>
+      <small style="color:var(--text2);">（百の位：x，十の位：y，一の位：z）</small>
+    </div>
+    <div class="point-box"><strong>📌 着眼点</strong>
+      99x + 9y + (x+y+z) を <span class="form-hl-purple">9(11x + y) + (x + y + z)</span> の形にくくりましょう。
+    </div>
+    <button class="hint-toggle" onclick="toggleHint('h-p4')">💡 ヒントを見る</button>
+    <div class="hint-box" id="h-p4">100x + 10y + z = 99x + 9y + (x+y+z) = 9(11x+y) + (x+y+z)</div>
+    <div class="choices" id="ch-p4">
+      <button class="ch" onclick="ansP('p4',0,2)"><span class="cnum">1</span><span>100x+10y+z<br>= 9(11x+y+z)</span></button>
+      <button class="ch" onclick="ansP('p4',1,2)"><span class="cnum">2</span><span>100x+10y+z<br>= 3(33x+3y)+(x+y+z)</span></button>
+      <button class="ch" onclick="ansP('p4',2,2)"><span class="cnum">3</span><span>100x+10y+z<br>= 99x+9y+(x+y+z)<br>= 9(11x+y)+(x+y+z)</span></button>
+      <button class="ch" onclick="ansP('p4',3,2)"><span class="cnum">4</span><span>100x+10y+z<br>= 99x+9y+(x+y+z)<br>（くくらずに終わり）</span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-p4"><span class="fb-icon">🎉</span><span class="fb-text">正解！<span class="fb-sub">9(11x+y)+(x+y+z) の形をつくれましたね ✨</span></span></div>
+    <div class="fb-ng" id="fb-ng-p4"><span class="fb-icon">😢</span><span class="fb-text">おしい！<span class="fb-sub">💡 99 = 9×11 として 9 でくくりましょう</span></span><button class="reset-btn" onclick="resetP('p4')">🔄 もう一度</button></div>
+    <div id="p4-res" style="display:none">
+      <div class="proof-box">
+        <div class="proof-title">【証明】</div>
+        100x + 10y + z<br>= 99x + 9y + (x + y + z)<br>= <strong>9(11x + y) + (x + y + z)</strong><br><br>
+        9(11x + y) は 9 の倍数であり，x + y + z も 9 の倍数だから，整数は <strong>9 の倍数</strong>である。　■
+      </div>
+      <div class="abc-wrap"><div class="abc-lbl">理解度をマークしてください</div><div class="abc-row">
+        <button class="abc-btn abc-A" id="p4-mA" onclick="setMark('p4m','A')">✅ A<span>わかった</span></button>
+        <button class="abc-btn abc-B" id="p4-mB" onclick="setMark('p4m','B')">📖 B<span>解説でわかった</span></button>
+        <button class="abc-btn abc-C" id="p4-mC" onclick="setMark('p4m','C')">❓ C<span>わからなかった</span></button>
+      </div></div>
+      <button class="next-tab-btn" onclick="switchTab('p5')" style="margin-top:1rem;">練習⑤へ進む →</button>
+    </div>
+    <div class="page-nav"><div class="page-nav-row"><button class="pnav-btn pnav-ex" onclick="switchTab('ex')">📖 例題に戻る</button><a href="index_MA.html" class="pnav-btn pnav-index">📋 単元表に戻る</a></div></div>
+  </div>
+</div>
+
+<!-- P5: p,q,r の3の倍数 -->
+<div class="page" id="page-p5">
+  <div class="page-hdr">
+    <div class="page-hdr-icon icon-p5">5</div>
+    <div class="page-hdr-body">
+      <div class="page-hdr-title">練習⑤　変数 p, q, r で 3 の倍数を証明しましょう</div>
+      <div class="page-hdr-desc">残り2つ ／ 変数が変わっても形は同じです</div>
+    </div>
+  </div>
+  <div class="prog-all">
+    <div class="prog-all-label"><span>全体の進捗</span><span id="prog-txt5">4 / 6 完了</span></div>
+    <div class="prog-dots">
+      <div class="pdot done">✓</div><div class="pdot done">✓</div><div class="pdot done">✓</div>
+      <div class="pdot done">✓</div><div class="pdot active">5</div><div class="pdot" id="dot5-p6">6</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel ex">練習⑤　3の倍数</div>
+    <div class="var-badge"><span class="vb vb-p">p</span><span class="vb vb-q">q</span><span class="vb vb-r">r</span></div>
+    <div class="q-text">
+      3桁の整数の各位の数の和（p + q + r）が 3 の倍数ならば，その整数も 3 の倍数であることを証明しなさい。<br>
+      <small style="color:var(--text2);">（百の位：p，十の位：q，一の位：r）</small>
+    </div>
+    <div class="point-box"><strong>📌 着眼点</strong>
+      100p + 10q + r を変形して，<span class="form-hl">99p + 9q + (p + q + r)</span> の形をつくりましょう。
+    </div>
+    <button class="hint-toggle" onclick="toggleHint('h-p5')">💡 ヒントを見る</button>
+    <div class="hint-box" id="h-p5">100p + 10q + r = 99p + 9q + (p+q+r) = 3(33p+3q) + (p+q+r)</div>
+    <div class="choices" id="ch-p5">
+      <button class="ch" onclick="ansP('p5',0,1)"><span class="cnum">1</span><span>100p+10q+r<br>= 99p+9q+(p+q+r)<br>= 3(33p+3q)+(p+q+r)</span></button>
+      <button class="ch" onclick="ansP('p5',1,1)"><span class="cnum">2</span><span>100p+10q+r<br>= 99p+9q+(p+q+r)<br>（くくらずに終わり）</span></button>
+      <button class="ch" onclick="ansP('p5',2,1)"><span class="cnum">3</span><span>100p+10q+r<br>= 9(11p+q)+(p+q+r)</span></button>
+      <button class="ch" onclick="ansP('p5',3,1)"><span class="cnum">4</span><span>100p+10q+r<br>= 3(100p+10q+r)</span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-p5"><span class="fb-icon">🎉</span><span class="fb-text">正解！もう迷いませんね！<span class="fb-sub">3(33p+3q)+(p+q+r) の形，完璧です ✨</span></span></div>
+    <div class="fb-ng" id="fb-ng-p5"><span class="fb-icon">😢</span><span class="fb-text">おしい！<span class="fb-sub">💡 99p+9q+(p+q+r) をさらに 3 でくくりましょう</span></span><button class="reset-btn" onclick="resetP('p5')">🔄 もう一度</button></div>
+    <div id="p5-res" style="display:none">
+      <div class="proof-box">
+        <div class="proof-title">【証明】</div>
+        100p + 10q + r<br>= 99p + 9q + (p + q + r)<br>= <strong>3(33p + 3q) + (p + q + r)</strong><br><br>
+        3(33p + 3q) は 3 の倍数であり，p + q + r も 3 の倍数だから，整数は <strong>3 の倍数</strong>である。　■
+      </div>
+      <div class="abc-wrap"><div class="abc-lbl">理解度をマークしてください</div><div class="abc-row">
+        <button class="abc-btn abc-A" id="p5-mA" onclick="setMark('p5m','A')">✅ A<span>わかった</span></button>
+        <button class="abc-btn abc-B" id="p5-mB" onclick="setMark('p5m','B')">📖 B<span>解説でわかった</span></button>
+        <button class="abc-btn abc-C" id="p5-mC" onclick="setMark('p5m','C')">❓ C<span>わからなかった</span></button>
+      </div></div>
+      <button class="next-tab-btn" onclick="switchTab('p6')" style="margin-top:1rem;">最終練習⑥へ進む →</button>
+    </div>
+    <div class="page-nav"><div class="page-nav-row"><button class="pnav-btn pnav-ex" onclick="switchTab('ex')">📖 例題に戻る</button><a href="index_MA.html" class="pnav-btn pnav-index">📋 単元表に戻る</a></div></div>
+  </div>
+</div>
+
+<!-- P6: p,q,r の9の倍数 -->
+<div class="page" id="page-p6">
+  <div class="page-hdr">
+    <div class="page-hdr-icon icon-p6">6</div>
+    <div class="page-hdr-body">
+      <div class="page-hdr-title">最終練習⑥　変数 p, q, r で 9 の倍数を証明しましょう</div>
+      <div class="page-hdr-desc">最後の1問 ／ 合格すると桜吹雪 🌸</div>
+    </div>
+  </div>
+  <div class="prog-all">
+    <div class="prog-all-label"><span>全体の進捗</span><span id="prog-txt6">5 / 6 完了</span></div>
+    <div class="prog-dots">
+      <div class="pdot done">✓</div><div class="pdot done">✓</div><div class="pdot done">✓</div>
+      <div class="pdot done">✓</div><div class="pdot done">✓</div><div class="pdot active">6</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel ex">最終練習⑥　9の倍数</div>
+    <div class="var-badge"><span class="vb vb-p">p</span><span class="vb vb-q">q</span><span class="vb vb-r">r</span></div>
+    <div class="q-text">
+      3桁の整数の各位の数の和（p + q + r）が 9 の倍数ならば，その整数も 9 の倍数であることを証明しなさい。<br>
+      <small style="color:var(--text2);">（百の位：p，十の位：q，一の位：r）</small>
+    </div>
+    <div class="point-box"><strong>📌 最終チェック</strong>
+      100p + 10q + r を変形して，<span class="form-hl-purple">9(11p + q) + (p + q + r)</span> の形をつくりましょう。<br>
+      例題で学んだ核心の変形，最後にもう一度確認しましょう！
+    </div>
+    <button class="hint-toggle" onclick="toggleHint('h-p6')">💡 ヒントを見る</button>
+    <div class="hint-box" id="h-p6">100p + 10q + r = 99p + 9q + (p+q+r) = 9(11p+q) + (p+q+r)</div>
+    <div id="t-p6" class="timer-wrap"><div class="timer-ring" id="ring-p6"><svg viewBox="0 0 44 44"><circle class="tbg" cx="22" cy="22" r="20"/><circle class="tfg" cx="22" cy="22" r="20"/></svg><div class="tcenter">0:00</div></div><div class="timer-msg">最後の1問，自力で挑戦してみましょう！<span class="goal"> 目標 5分</span></div></div>
+    <div class="cf-result-ok" id="cf-result-ok-p6">🌸 合格！　がんばったね</div>
+    <div class="cf-result-ng" id="cf-result-ng-p6">😅 おしい！もう一度挑戦しましょう！</div>
+    <div class="choices" id="ch-p6">
+      <button class="ch cf-choice-p6" data-correct="false" onclick="cfSelectP6(this)"><span class="cnum">1</span><span>100p+10q+r<br>= 99p+9q+(p+q+r)<br>（くくらずに終わり）</span></button>
+      <button class="ch cf-choice-p6" data-correct="false" onclick="cfSelectP6(this)"><span class="cnum">2</span><span>100p+10q+r<br>= 3(33p+3q)+(p+q+r)</span></button>
+      <button class="ch cf-choice-p6" data-correct="true"  onclick="cfSelectP6(this)"><span class="cnum">3</span><span>100p+10q+r<br>= 99p+9q+(p+q+r)<br>= 9(11p+q)+(p+q+r)</span></button>
+      <button class="ch cf-choice-p6" data-correct="false" onclick="cfSelectP6(this)"><span class="cnum">4</span><span>100p+10q+r<br>= 9(11p+q+r)</span></button>
+    </div>
+    <button class="cf-judge-btn" id="cf-judge-p6" onclick="cfJudgeP6()">答えを確認する ✓</button>
+    <div id="p6-res" style="display:none">
+      <div class="proof-box">
+        <div class="proof-title">【証明】</div>
+        100p + 10q + r<br>= 99p + 9q + (p + q + r)<br>= <strong>9(11p + q) + (p + q + r)</strong><br><br>
+        9(11p + q) は 9 の倍数であり，p + q + r も 9 の倍数だから，整数は <strong>9 の倍数</strong>である。　■
+      </div>
+      <div class="abc-wrap"><div class="abc-lbl">理解度をマークしてください</div><div class="abc-row">
+        <button class="abc-btn abc-A" id="p6-mA" onclick="setMark('p6m','A')">✅ A<span>わかった</span></button>
+        <button class="abc-btn abc-B" id="p6-mB" onclick="setMark('p6m','B')">📖 B<span>解説でわかった</span></button>
+        <button class="abc-btn abc-C" id="p6-mC" onclick="setMark('p6m','C')">❓ C<span>わからなかった</span></button>
+      </div></div>
+    </div>
+  </div>
+  <div class="unit-nav" id="unit-nav">
+    <div class="unit-nav-row"><a href="index_MA.html" class="unav-btn unav-index">📋 単元表に戻る</a><button class="unav-btn pnav-btn pnav-ex" style="text-decoration:none;" onclick="switchTab('ex')">📖 例題に戻る</button></div>
+    <div class="unit-nav-row"><a href="MA_proof_divisibility.html" class="unav-btn unav-prev">← 整数の性質・倍数判定</a></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const TMAX=300;const answered={};const stepRevEx={v:0};const timers={};let doneCount=0;
+
+function switchTab(tab){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.className='tab-btn');
+  document.getElementById('page-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active-'+tab);
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(tab==='p6'&&!answered['p6'])startTimerP6();
+}
+
+// 例題のSTEP
+let exStep=0;
+function revealEx(total){
+  const el=document.getElementById('ex-s'+exStep);
+  if(el){el.style.display='block';exStep++;setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),60);}
+  const btn=document.getElementById('rb-ex');
+  if(exStep>=total){btn.style.display='none';document.getElementById('ex-fin').style.display='block';setTimeout(()=>document.getElementById('ex-fin').scrollIntoView({behavior:'smooth',block:'nearest'}),60);}
+  else{btn.textContent='STEP '+exStep+' を見る ▼';}
+}
+
+// 練習1〜5
+function ansP(pid,idx,correct){
+  if(answered[pid])return;
+  answered[pid]=true;
+  var isOk=(idx===correct);
+  document.querySelectorAll('#ch-'+pid+' .ch').forEach(function(b,i){
+    b.disabled=true;
+    if(i===correct){b.className='ch ok';b.querySelector('.cnum').style.cssText='background:var(--teal);color:#fff';}
+    else if(i===idx&&!isOk){b.className='ch ng';b.querySelector('.cnum').style.cssText='background:var(--pink);color:#fff';}
+  });
+  if(isOk){document.getElementById('fb-ok-'+pid).style.display='flex';_launchConfetti();}
+  else{document.getElementById('fb-ng-'+pid).style.display='flex';}
+  document.getElementById(pid+'-res').style.display='block';
+  if(isOk){
+    doneCount++;
+    updateDots();
+    document.getElementById('done-'+pid).style.display='flex';
+  }
+}
+
+function resetP(pid){
+  delete answered[pid];
+  document.getElementById('fb-ok-'+pid).style.display='none';
+  document.getElementById('fb-ng-'+pid).style.display='none';
+  document.getElementById(pid+'-res').style.display='none';
+  document.querySelectorAll('#ch-'+pid+' .ch').forEach(function(b){b.disabled=false;b.className='ch';b.querySelector('.cnum').style.cssText='';});
+}
+
+function updateDots(){
+  var labels=['p1','p2','p3','p4','p5','p6'];
+  for(var i=0;i<doneCount&&i<6;i++){
+    var d=document.querySelectorAll('.pdot')[i];
+    // 全ページのドットを更新するのは複雑なので簡略化
+  }
+}
+
+// 確認問題（p6）
+var cfSelP6=null,cfAnsP6=false;
+function cfSelectP6(btn){
+  if(cfAnsP6)return;
+  document.querySelectorAll('.cf-choice-p6').forEach(function(b){b.classList.remove('selected');});
+  btn.classList.add('selected');cfSelP6=btn;
+  document.getElementById('cf-judge-p6').classList.add('active');
+}
+function cfJudgeP6(){
+  if(!cfSelP6||cfAnsP6)return;
+  cfAnsP6=true;stopTimerP6();
+  var isOk=cfSelP6.getAttribute('data-correct')==='true';
+  document.querySelectorAll('.cf-choice-p6').forEach(function(b){
+    b.disabled=true;
+    if(b.getAttribute('data-correct')==='true'){b.className='ch ok cf-choice-p6';b.querySelector('.cnum').style.cssText='background:var(--teal);color:#fff';}
+    else if(b===cfSelP6&&!isOk){b.className='ch ng cf-choice-p6';b.querySelector('.cnum').style.cssText='background:var(--pink);color:#fff';}
+  });
+  document.getElementById('cf-judge-p6').style.display='none';
+  document.getElementById('t-p6').style.display='none';
+  if(isOk){
+    document.getElementById('cf-result-ok-p6').style.display='block';
+    _launchConfetti();startSakura();
+    doneCount++;
+    document.getElementById('done-p6').style.display='flex';
+    setTimeout(function(){
+      document.getElementById('p6-res').style.display='block';
+      document.getElementById('unit-nav').style.display='flex';
+      setTimeout(showPassModal,800);
+    },800);
+  }else{
+    document.getElementById('cf-result-ng-p6').style.display='block';
+    setTimeout(function(){
+      document.getElementById('cf-result-ng-p6').style.display='none';
+      cfAnsP6=false;cfSelP6=null;
+      document.querySelectorAll('.cf-choice-p6').forEach(function(b){b.disabled=false;b.classList.remove('selected','ok','ng');b.querySelector('.cnum').style.cssText='';});
+      document.getElementById('cf-judge-p6').classList.remove('active');
+      document.getElementById('cf-judge-p6').style.display='';
+    },2000);
+  }
+}
+
+// タイマー（p6のみ）
+function startTimerP6(){
+  if(timers['p6']||answered['p6'])return;
+  const start=Date.now();tick(0);
+  timers['p6']=setInterval(()=>tick(Math.floor((Date.now()-start)/1000)),1000);
+  function tick(sec){
+    const ring=document.getElementById('ring-p6');if(!ring)return;
+    const fg=ring.querySelector('.tfg');const txt=ring.querySelector('.tcenter');
+    const msg=document.querySelector('#t-p6 .timer-msg');
+    const pct=Math.min(sec/TMAX,1);
+    fg.style.strokeDashoffset=126*pct;fg.className='tfg'+(pct>.8?' warn':'');
+    const m=Math.floor(sec/60),s=sec%60;
+    txt.textContent=`${m}:${String(s).padStart(2,'0')}`;
+    if(msg){if(sec<60)msg.innerHTML='最後の1問，自力で挑戦してみましょう！<span class="goal"> 目標内</span>';
+      else if(sec<300)msg.innerHTML='じっくり考えています…<span class="goal">まだ大丈夫！</span>';
+      else msg.innerHTML='ヒントを参考にしてみましょう。';}
+  }
+}
+function stopTimerP6(){clearInterval(timers['p6']);timers['p6']=null;}
+
+function toggleHint(id){const b=document.getElementById(id);b.style.display=b.style.display==='block'?'none':'block';}
+function setMark(prefix,m){const base=prefix.slice(0,2);const kind=prefix.slice(2);['A','B','C'].forEach(x=>{const el=document.getElementById(base+'-'+kind+x);if(el)el.classList.toggle('on',x===m);});}
+function showPassModal(){document.getElementById('pass-modal').classList.add('show');}
+function closePassModal(){document.getElementById('pass-modal').classList.remove('show');stopSakura();}
+var sakuraRunning=false,sakuraPetals=[],sakuraRaf=null;
+function startSakura(){var cv=document.getElementById('sakura-canvas');cv.style.display='block';cv.width=window.innerWidth;cv.height=window.innerHeight;sakuraPetals=[];for(var i=0;i<120;i++){sakuraPetals.push({x:Math.random()*cv.width,y:-Math.random()*cv.height*0.5,r:Math.random()*7+4,sp:Math.random()*2+1,sx:(Math.random()-.5)*1.2,sw:Math.random()*Math.PI*2,swSpd:(Math.random()-.5)*.04,rot:Math.random()*Math.PI*2,rotSpd:(Math.random()-.5)*.05,alpha:Math.random()*.4+.6});}sakuraRunning=true;sakuraDraw();setTimeout(stopSakura,6000);}
+function stopSakura(){sakuraRunning=false;if(sakuraRaf)cancelAnimationFrame(sakuraRaf);var cv=document.getElementById('sakura-canvas');cv.getContext('2d').clearRect(0,0,cv.width,cv.height);cv.style.display='none';}
+function sakuraDraw(){if(!sakuraRunning)return;var cv=document.getElementById('sakura-canvas');var ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);sakuraPetals.forEach(function(p){p.sw+=p.swSpd;p.x+=p.sx+Math.sin(p.sw)*0.8;p.y+=p.sp;p.rot+=p.rotSpd;if(p.y>cv.height+20)p.y=-20;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=p.alpha;ctx.beginPath();ctx.fillStyle='#ffb7c5';for(var j=0;j<5;j++){var a=j/5*Math.PI*2-Math.PI/2;var x1=Math.cos(a)*p.r;var y1=Math.sin(a)*p.r;var x2=Math.cos(a+Math.PI/5)*p.r*.4;var y2=Math.sin(a+Math.PI/5)*p.r*.4;if(j===0)ctx.moveTo(x1,y1);else ctx.lineTo(x1,y1);ctx.lineTo(x2,y2);}ctx.closePath();ctx.fill();ctx.restore();});sakuraRaf=requestAnimationFrame(sakuraDraw);}
+function _launchConfetti(){var cv=document.getElementById('_gamba_cf');if(!cv){cv=document.createElement('canvas');cv.id='_gamba_cf';cv.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;';document.body.appendChild(cv);}var ctx=cv.getContext('2d');cv.width=window.innerWidth;cv.height=window.innerHeight;var pts=[],run=true;for(var i=0;i<200;i++)pts.push({x:Math.random()*cv.width,y:-Math.random()*cv.height*0.5,s:Math.random()*8+4,c:'hsl('+Math.floor(Math.random()*360)+',80%,60%)',sp:Math.random()*4+2,r:Math.random()*Math.PI*2,rv:(Math.random()-.5)*.15});(function step(){if(!run)return;requestAnimationFrame(step);ctx.clearRect(0,0,cv.width,cv.height);pts.forEach(function(p){p.y+=p.sp;p.r+=p.rv;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);ctx.restore();});})();setTimeout(function(){run=false;ctx.clearRect(0,0,cv.width,cv.height);},3500);}
+</script>
+
+<div class="index-footer">
+  <a href="MA_proof_index.html" class="index-footer-btn">📋 単元表に戻る</a>
+</div>
+</body>
+</html>

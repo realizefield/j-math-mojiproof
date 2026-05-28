@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>GAMBA 文字式の証明 単元表</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'BIZ UDGothic','Hiragino Kaku Gothic Pro','Meiryo',sans-serif;background:#eef2f7;color:#1a1a2e;min-height:100vh;font-size:15px}
+.top-header{background:linear-gradient(135deg,#2055b0 0%,#d93652 100%);color:#fff;padding:16px 16px 0;text-align:center}
+.top-header h1{font-size:18px;font-weight:700;letter-spacing:.05em}
+.top-header p{font-size:12px;margin-top:3px;opacity:.85}
+.summary-bar{background:rgba(0,0,0,.25);margin-top:12px;padding:9px 14px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:12px;color:#fff}
+.sum-item{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.sum-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.sum-dot-a{background:#4caf50}.sum-dot-b{background:#f9a825}.sum-dot-c{background:#e53935}.sum-dot-n{background:#aaa}
+.sum-count{font-weight:700;font-size:15px;min-width:18px;text-align:center}
+.wrap{max-width:920px;margin:0 auto;padding:16px 12px 48px}
+.unit{background:#fff;border-radius:14px;border:1px solid #dde3ee;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}
+.unit-hd{padding:12px 16px;display:flex;align-items:center;gap:10px;color:#fff}
+.unit-hd-1{background:linear-gradient(90deg,#2055b0,#3a7bd5)}
+.unit-num{background:rgba(255,255,255,.2);border-radius:8px;padding:3px 10px;font-size:13px;font-weight:700;white-space:nowrap}
+.unit-title{font-size:16px;font-weight:700;flex:1}
+.unit-badge{font-size:11px;background:rgba(255,255,255,.3);border-radius:10px;padding:2px 8px;white-space:nowrap;font-weight:700}
+.unit-body{padding:14px 16px}
+.group-label{font-size:12px;font-weight:700;color:#666;margin:14px 0 8px;letter-spacing:.05em;padding-bottom:4px;border-bottom:1.5px dashed #ccc;display:flex;align-items:center;gap:8px}
+.group-label:first-child{margin-top:0}
+.sec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:4px}
+.sec-card{border-radius:10px;border:1.5px solid #dde3ee;overflow:hidden;transition:.2s;background:#fff}
+.sec-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.1);transform:translateY(-1px)}
+.sec-card a{text-decoration:none;color:inherit;display:block}
+.sec-card.grade-2 .sc-hd{background:#eaf0fb;border-bottom:2px solid #2055b0}
+.sec-card.grade-2 .sc-num{background:#2055b0}
+.sec-card.grade-2 .sc-title{color:#153a80}
+.sec-card.grade-2 .sc-btn-learn{background:#2055b0}
+.sec-card.grade-2 .sc-btn-learn:hover{background:#153a80}
+.sec-card.grade-2 .sc-topics li::before{color:#2055b0}
+.sc-hd{padding:9px 12px;display:flex;align-items:center;gap:8px}
+.sc-num{color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;padding:3px 8px;min-width:42px;text-align:center}
+.sc-title{font-size:13px;font-weight:700;flex:1;line-height:1.3}
+.sc-stars{font-size:11px;color:#f9a825;letter-spacing:-1px;flex-shrink:0}
+.sc-body{padding:9px 12px;background:#fff}
+.sc-topics{list-style:none;margin:0;padding:0}
+.sc-topics li{font-size:12px;color:#555;padding:2px 0;border-bottom:1px solid #f0f0f5;line-height:1.5}
+.sc-topics li:last-child{border-bottom:none}
+.sc-topics li::before{content:"・";color:#2055b0}
+.sc-btn-row{display:flex;gap:6px;margin-top:8px}
+.sc-btn{flex:1;text-align:center;padding:7px 4px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;transition:.15s;font-family:inherit;border:none;cursor:pointer;display:block;color:#fff}
+.sc-btn-soon{background:#bbb;color:#fff;cursor:not-allowed;pointer-events:none}
+.abc-row{display:flex;gap:6px;padding:8px 12px 10px}
+.abc-btn{flex:1;padding:7px 2px;border-radius:20px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:.15s;border:2px solid;text-align:center;background:#fff}
+.abc-btn-a{border-color:#2e7d32;color:#fff;background:#43a047}
+.abc-btn-b{border-color:#f9a825;color:#fff;background:#f9a825}
+.abc-btn-c{border-color:#e53935;color:#fff;background:#e53935}
+.abc-btn:hover{opacity:.85}
+.abc-btn-a.sel{background:#1b5e20;border-color:#1b5e20}
+.abc-btn-b.sel{background:#e65100;color:#fff;border-color:#e65100}
+.abc-btn-c.sel{background:#b71c1c;color:#fff;border-color:#b71c1c}
+.sec-card.status-a{border-color:#2e7d32}
+.sec-card.status-a .sc-hd{background:#e8f5e9 !important;border-bottom-color:#2e7d32 !important}
+.sec-card.status-b{border-color:#f9a825}
+.sec-card.status-b .sc-hd{background:#fff9e6 !important;border-bottom-color:#f9a825 !important}
+.sec-card.status-c{border-color:#e53935}
+.sec-card.status-c .sc-hd{background:#fce8e8 !important;border-bottom-color:#e53935 !important}
+.flow{background:#fff;border-radius:14px;border:1px solid #dde3ee;padding:14px 16px;margin-bottom:20px}
+.flow-title{font-size:14px;font-weight:700;color:#2055b0;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #2055b0}
+.flow-steps{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.flow-step{background:#eaf0fb;border:1px solid #a8c0e8;border-radius:8px;padding:7px 12px;font-size:12px;color:#2055b0;font-weight:700;white-space:nowrap}
+.flow-arrow{color:#2055b0;font-size:16px;font-weight:700}
+.nav-links{display:flex;gap:10px;justify-content:center;margin:24px 0 8px;flex-wrap:wrap}
+.nav-link{padding:10px 18px;border-radius:10px;border:1.5px solid #dde3ee;background:#fff;color:#2055b0;font-size:13px;font-weight:700;text-decoration:none;transition:.15s}
+.nav-link:hover{border-color:#2055b0;color:#fff;background:#2055b0}
+.nav-link.active{background:#2055b0;color:#fff;border-color:#2055b0}
+canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;display:none}
+/* 難易度バッジ */
+.diff-badge{display:inline-block;font-size:10px;font-weight:700;border-radius:4px;padding:1px 6px;margin-left:4px;vertical-align:middle;}
+.diff-1{background:#e6f5f1;color:#0d9478;}
+.diff-2{background:#eaf0fb;color:#2055b0;}
+.diff-3{background:#fde8eb;color:#d93652;}
+</style>
+</head>
+<body>
+<canvas id="cc"></canvas>
+
+<div class="top-header">
+  <h1>✏️ GAMBA 文字式の証明 単元表</h1>
+  <p>中学2年数学・江原予備校 ― 文字式を使って証明しよう ―</p>
+  <div class="summary-bar">
+    <div class="sum-item"><span class="sum-dot sum-dot-a"></span>A わかった <span class="sum-count" id="cnt-a">0</span> 単元</div>
+    <div class="sum-item"><span class="sum-dot sum-dot-b"></span>B 要復習 <span class="sum-count" id="cnt-b">0</span> 単元</div>
+    <div class="sum-item"><span class="sum-dot sum-dot-c"></span>C 何度も復習 <span class="sum-count" id="cnt-c">0</span> 単元</div>
+    <div class="sum-item"><span class="sum-dot sum-dot-n"></span>未実施 <span class="sum-count" id="cnt-n">10</span> 単元</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="flow">
+    <div class="flow-title">📖 学習の流れ</div>
+    <div class="flow-steps">
+      <div class="flow-step">① 例題で証明の形を学ぶ</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">② 演習問題で練習</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">③ 確認問題で腕試し</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">④ 合格で桜吹雪 🌸</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">⑤ A/B/C で自己評価</div>
+    </div>
+  </div>
+
+  <!-- ══ Unit 1: 倍数の証明 ══ -->
+  <div class="unit">
+    <div class="unit-hd unit-hd-1"><span class="unit-num">中2</span><span class="unit-title">倍数の証明</span><span class="unit-badge">○ × (整数) の形をつくろう</span></div>
+    <div class="unit-body">
+
+      <div class="group-label">🔢 基本の倍数証明</div>
+      <div class="sec-grid">
+
+        <div class="sec-card grade-2" data-id="MA01">
+          <a href="MA_proof_5.html"><div class="sc-hd"><span class="sc-num">MA-01</span><span class="sc-title">5の倍数の証明</span><span class="sc-stars">★☆☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>5 × (整数) の形をつくる</li><li>5でくくる変形の基本</li><li>証明の書き方の手順</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MA_proof_5.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MA01','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MA01','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MA01','c',this)">C 何度も</button></div>
+        </div>
+
+        <div class="sec-card grade-2" data-id="MA02">
+          <a href="MA_proof_3.html"><div class="sc-hd"><span class="sc-num">MA-02</span><span class="sc-title">3の倍数の証明</span><span class="sc-stars">★☆☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>3 × (整数) の形をつくる</li><li>係数を3で分解してくくる</li><li>5の倍数との比較</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MA_proof_3.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MA02','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MA02','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MA02','c',this)">C 何度も</button></div>
+        </div>
+
+        <div class="sec-card grade-2" data-id="MA03">
+          <a href="MA_proof_4.html"><div class="sc-hd"><span class="sc-num">MA-03</span><span class="sc-title">4の倍数の証明</span><span class="sc-stars">★☆☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>4 × (整数) の形をつくる</li><li>係数を4で分解してくくる</li><li>4の倍数の判定</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MA_proof_4.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MA03','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MA03','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MA03','c',this)">C 何度も</button></div>
+        </div>
+
+      </div>
+
+      <div class="group-label">🔢 偶数・奇数・連続する整数</div>
+      <div class="sec-grid">
+
+        <div class="sec-card grade-2" data-id="MA04">
+          <a href="MA_proof_even_odd.html"><div class="sc-hd"><span class="sc-num">MA-04</span><span class="sc-title">偶数・奇数の証明</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>偶数 = 2m，奇数 = 2m+1 の定義</li><li>2つの数には異なる文字を使う</li><li>偶数・奇数の和・積の証明</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MA_proof_even_odd.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MA04','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MA04','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MA04','c',this)">C 何度も</button></div>
+        </div>
+
+        <div class="sec-card grade-2" data-id="MA05">
+          <a href="MA_proof_consecutive.html"><div class="sc-hd"><span class="sc-num">MA-05</span><span class="sc-title">連続する整数の証明</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>連続する整数は n，n+1，n+2</li><li>1つの文字 n で表せる</li><li>連続する整数の和・積の性質</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MA_proof_consecutive.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MA05','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MA05','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MA05','c',this)">C 何度も</button></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Unit 2: 式の値・代入の証明 ══ -->
+  <div class="unit">
+    <div class="unit-hd unit-hd-1"><span class="unit-num">中2</span><span class="unit-title">式の値の証明</span><span class="unit-badge">変形 → 代入 → 計算</span></div>
+    <div class="unit-body">
+      <div class="group-label">📐 条件を代入して値を求める</div>
+      <div class="sec-grid">
+
+        <div class="sec-card grade-2" data-id="MA06">
+          <a href="MA_proof_value.html"><div class="sc-hd"><span class="sc-num">MA-06</span><span class="sc-title">式の値の証明</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>条件の形が現れるように変形</li><li>変形 → 代入 → 計算の3ステップ</li><li>x+y，a-b などの条件の使い方</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MA_proof_value.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MA06','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MA06','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MA06','c',this)">C 何度も</button></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Unit 3: 整数の性質 ══ -->
+  <div class="unit">
+    <div class="unit-hd unit-hd-1"><span class="unit-num">中2</span><span class="unit-title">整数の性質・倍数判定</span><span class="unit-badge">n = ○k とおく</span></div>
+    <div class="unit-body">
+      <div class="group-label">🔍 桁・倍数の高度な証明</div>
+      <div class="sec-grid">
+
+        <div class="sec-card grade-2" data-id="MA07">
+          <a href="MA_proof_digits.html"><div class="sc-hd"><span class="sc-num">MA-07</span><span class="sc-title">2桁・3桁の整数の証明</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>2桁の整数 = 10a + b</li><li>3桁の整数 = 100a + 10b + c</li><li>位の入れ替えと差・和の証明</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MA_proof_digits.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MA07','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MA07','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MA07','c',this)">C 何度も</button></div>
+        </div>
+
+        <div class="sec-card grade-2" data-id="MA08">
+          <a href="MA_proof_divisibility.html"><div class="sc-hd"><span class="sc-num">MA-08</span><span class="sc-title">整数の性質・倍数判定</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>n が○の倍数 → n = ○k とおく</li><li>代入して ○×(整数) の形をつくる</li><li>6 = 2×3 を使った発展証明</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MA_proof_divisibility.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MA08','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MA08','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MA08','c',this)">C 何度も</button></div>
+        </div>
+
+        <div class="sec-card grade-2" data-id="MA09">
+          <a href="MA_proof_digit_sum.html"><div class="sc-hd"><span class="sc-num">MA-09</span><span class="sc-title">各位の和と倍数判定</span><span class="sc-stars">★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>100=99+1，10=9+1 の変形が核心</li><li>各位の和が3の倍数 → 3の倍数</li><li>各位の和が9の倍数 → 9の倍数</li><li>a,b,d / x,y,z / p,q,r で6回練習</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MA_proof_digit_sum.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MA09','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MA09','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MA09','c',this)">C 何度も</button></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 証明の形まとめ表 -->
+  <div class="flow" style="margin-top:0;">
+    <div class="flow-title">📋 証明の「形」 早見表</div>
+    <div style="overflow-x:auto;margin-top:8px;">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <tr style="background:#eaf0fb;">
+          <th style="padding:7px 10px;text-align:left;border:1px solid #c5d5f0;color:#2055b0;">証明すること</th>
+          <th style="padding:7px 10px;text-align:left;border:1px solid #c5d5f0;color:#2055b0;">つくる形</th>
+          <th style="padding:7px 10px;text-align:left;border:1px solid #c5d5f0;color:#2055b0;">単元</th>
+        </tr>
+        <tr><td style="padding:6px 10px;border:1px solid #dde3ee;">○の倍数</td><td style="padding:6px 10px;border:1px solid #dde3ee;font-weight:700;color:#d93652;">○ × (整数)</td><td style="padding:6px 10px;border:1px solid #dde3ee;">MA-01〜03</td></tr>
+        <tr style="background:#f9fbff;"><td style="padding:6px 10px;border:1px solid #dde3ee;">偶数</td><td style="padding:6px 10px;border:1px solid #dde3ee;font-weight:700;color:#0d9478;">2 × (整数)</td><td style="padding:6px 10px;border:1px solid #dde3ee;">MA-04</td></tr>
+        <tr><td style="padding:6px 10px;border:1px solid #dde3ee;">奇数</td><td style="padding:6px 10px;border:1px solid #dde3ee;font-weight:700;color:#2055b0;">2 × (整数) + 1</td><td style="padding:6px 10px;border:1px solid #dde3ee;">MA-04</td></tr>
+        <tr style="background:#f9fbff;"><td style="padding:6px 10px;border:1px solid #dde3ee;">連続する整数の性質</td><td style="padding:6px 10px;border:1px solid #dde3ee;font-weight:700;color:#7c3aed;">n，n+1，n+2 とおく</td><td style="padding:6px 10px;border:1px solid #dde3ee;">MA-05</td></tr>
+        <tr><td style="padding:6px 10px;border:1px solid #dde3ee;">式の値</td><td style="padding:6px 10px;border:1px solid #dde3ee;font-weight:700;color:#a86000;">変形 → 代入 → 計算</td><td style="padding:6px 10px;border:1px solid #dde3ee;">MA-06</td></tr>
+        <tr style="background:#f9fbff;"><td style="padding:6px 10px;border:1px solid #dde3ee;">2桁・3桁の整数</td><td style="padding:6px 10px;border:1px solid #dde3ee;font-weight:700;color:#d93652;">10a+b，100a+10b+c</td><td style="padding:6px 10px;border:1px solid #dde3ee;">MA-07</td></tr>
+        <tr><td style="padding:6px 10px;border:1px solid #dde3ee;">倍数判定（n = ○k）</td><td style="padding:6px 10px;border:1px solid #dde3ee;font-weight:700;color:#0d9478;">n = ○k とおいて代入</td><td style="padding:6px 10px;border:1px solid #dde3ee;">MA-08</td></tr>
+        <tr style="background:#f9fbff;"><td style="padding:6px 10px;border:1px solid #dde3ee;">各位の和と倍数判定</td><td style="padding:6px 10px;border:1px solid #dde3ee;font-weight:700;color:#2055b0;">99a+9b+(a+b+c)</td><td style="padding:6px 10px;border:1px solid #dde3ee;">MA-09</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var STORAGE_KEY='gamba_ma_proof_status_v1';
+var status={};
+var activeIds=['MA01','MA02','MA03','MA04','MA05','MA06','MA07','MA08','MA09'];
+try{var saved=localStorage.getItem(STORAGE_KEY);if(saved)status=JSON.parse(saved);}catch(e){}
+function applyStoredStatus(){Object.keys(status).forEach(function(id){var grade=status[id];var card=document.querySelector('[data-id="'+id+'"]');if(!card)return;card.classList.add('status-'+grade);var btn=card.querySelector('.abc-btn-'+grade);if(btn)btn.classList.add('sel');});}
+function saveStatus(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(status));}catch(e){}}
+function setABC(id,grade,btn){
+  var card=document.querySelector('[data-id="'+id+'"]');if(!card)return;
+  if(status[id]===grade){delete status[id];card.className=card.className.replace(/ ?status-[abc]/g,'');card.querySelectorAll('.abc-btn').forEach(function(b){b.classList.remove('sel');});saveStatus();updateSummary();return;}
+  status[id]=grade;card.className=card.className.replace(/ ?status-[abc]/g,'');card.classList.add('status-'+grade);
+  card.querySelectorAll('.abc-btn').forEach(function(b){b.classList.remove('sel');});btn.classList.add('sel');
+  saveStatus();if(grade==='a')confetti();updateSummary();
+}
+function updateSummary(){
+  var ca=0,cb=0,cc=0,cn=0;
+  activeIds.forEach(function(id){var s=status[id];if(s==='a')ca++;else if(s==='b')cb++;else if(s==='c')cc++;else cn++;});
+  document.getElementById('cnt-a').textContent=ca;document.getElementById('cnt-b').textContent=cb;
+  document.getElementById('cnt-c').textContent=cc;document.getElementById('cnt-n').textContent=cn;
+}
+function confetti(){
+  var cv=document.getElementById('cc');cv.width=window.innerWidth;cv.height=window.innerHeight;cv.style.display='block';
+  var ctx=cv.getContext('2d');
+  var cols=['#f9a825','#0d9478','#2055b0','#7d3eb0','#e53935','#2e7d32','#ff6f00','#ff4081'];
+  var ps=[];for(var k=0;k<130;k++){ps.push({x:Math.random()*cv.width,y:-20-Math.random()*180,w:7+Math.random()*9,h:3+Math.random()*5,c:cols[Math.floor(Math.random()*cols.length)],s:2+Math.random()*4,a:Math.random()*360,sp:3-Math.random()*6,d:(Math.random()-0.5)*2.5});}
+  var fr=0;
+  function draw(){ctx.clearRect(0,0,cv.width,cv.height);ps.forEach(function(p){ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a*Math.PI/180);ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();p.y+=p.s;p.x+=p.d;p.a+=p.sp;});fr++;if(fr<100)requestAnimationFrame(draw);else{ctx.clearRect(0,0,cv.width,cv.height);cv.style.display='none';}}
+  draw();
+}
+applyStoredStatus();updateSummary();
+</script>
+</body>
+</html>

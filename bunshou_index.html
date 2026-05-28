@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>GAMBA 文章題 単元表</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'BIZ UDGothic','Hiragino Kaku Gothic Pro','Meiryo',sans-serif;background:#eef2f7;color:#1a1a2e;min-height:100vh;font-size:15px}
+.top-header{background:linear-gradient(135deg,#0d4f7a 0%,#a86000 100%);color:#fff;padding:16px 16px 0;text-align:center}
+.top-header h1{font-size:18px;font-weight:700;letter-spacing:.05em}
+.top-header p{font-size:12px;margin-top:3px;opacity:.85}
+.summary-bar{background:rgba(0,0,0,.25);margin-top:12px;padding:9px 14px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:12px;color:#fff}
+.sum-item{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.sum-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.sum-dot-a{background:#4caf50}
+.sum-dot-b{background:#f9a825}
+.sum-dot-c{background:#e53935}
+.sum-dot-n{background:#aaa}
+.sum-count{font-weight:700;font-size:15px;min-width:18px;text-align:center}
+.wrap{max-width:920px;margin:0 auto;padding:16px 12px 48px}
+
+.unit{background:#fff;border-radius:14px;border:1px solid #dde3ee;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}
+.unit-hd{padding:12px 16px;display:flex;align-items:center;gap:10px;color:#fff}
+.unit-hd-1{background:linear-gradient(90deg,#0d9478,#1ab394)}
+.unit-hd-2{background:linear-gradient(90deg,#2055b0,#3a7bd5)}
+.unit-hd-3{background:linear-gradient(90deg,#7d3eb0,#a866d4)}
+.unit-num{background:rgba(255,255,255,.2);border-radius:8px;padding:3px 10px;font-size:13px;font-weight:700;white-space:nowrap}
+.unit-title{font-size:16px;font-weight:700;flex:1}
+.unit-badge{font-size:11px;background:rgba(255,255,255,.3);border-radius:10px;padding:2px 8px;white-space:nowrap;font-weight:700}
+.unit-body{padding:14px 16px}
+
+.group-label{font-size:12px;font-weight:700;color:#666;margin:14px 0 8px;letter-spacing:.05em;padding-bottom:4px;border-bottom:1.5px dashed #ccc;display:flex;align-items:center;gap:8px}
+.group-label:first-child{margin-top:0}
+
+.sec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:4px}
+.sec-card{border-radius:10px;border:1.5px solid #dde3ee;overflow:hidden;transition:.2s;background:#fff}
+.sec-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.1);transform:translateY(-1px)}
+.sec-card a{text-decoration:none;color:inherit;display:block}
+
+/* 中1: teal */
+.sec-card.grade-1 .sc-hd{background:#e6f5f1;border-bottom:2px solid #0d9478}
+.sec-card.grade-1 .sc-num{background:#0d9478}
+.sec-card.grade-1 .sc-title{color:#0a6b58}
+.sec-card.grade-1 .sc-btn-learn{background:#0d9478}
+.sec-card.grade-1 .sc-btn-learn:hover{background:#0a6b58}
+
+/* 中2: blue */
+.sec-card.grade-2 .sc-hd{background:#eaf0fb;border-bottom:2px solid #2055b0}
+.sec-card.grade-2 .sc-num{background:#2055b0}
+.sec-card.grade-2 .sc-title{color:#153a80}
+.sec-card.grade-2 .sc-btn-learn{background:#2055b0}
+.sec-card.grade-2 .sc-btn-learn:hover{background:#153a80}
+
+/* 中3: purple */
+.sec-card.grade-3 .sc-hd{background:#f1e8f7;border-bottom:2px solid #7d3eb0}
+.sec-card.grade-3 .sc-num{background:#7d3eb0}
+.sec-card.grade-3 .sc-title{color:#5a2a80}
+.sec-card.grade-3 .sc-btn-learn{background:#7d3eb0}
+.sec-card.grade-3 .sc-btn-learn:hover{background:#5a2a80}
+
+.sc-hd{padding:9px 12px;display:flex;align-items:center;gap:8px}
+.sc-num{color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;padding:3px 8px;min-width:42px;text-align:center}
+.sc-title{font-size:13px;font-weight:700;flex:1;line-height:1.3}
+.sc-stars{font-size:11px;color:#f9a825;letter-spacing:-1px;flex-shrink:0}
+.sc-body{padding:9px 12px;background:#fff}
+.sc-topics{list-style:none;margin:0;padding:0}
+.sc-topics li{font-size:12px;color:#555;padding:2px 0;border-bottom:1px solid #f0f0f5;line-height:1.5}
+.sc-topics li:last-child{border-bottom:none}
+.sc-topics li::before{content:"・";color:#0d9478}
+.sec-card.grade-2 .sc-topics li::before{color:#2055b0}
+.sec-card.grade-3 .sc-topics li::before{color:#7d3eb0}
+
+.sc-btn-row{display:flex;gap:6px;margin-top:8px}
+.sc-btn{flex:1;text-align:center;padding:7px 4px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;transition:.15s;font-family:inherit;border:none;cursor:pointer;display:block;color:#fff}
+.sc-btn-soon{background:#bbb;color:#fff;cursor:not-allowed;pointer-events:none}
+
+.abc-row{display:flex;gap:6px;padding:8px 12px 10px}
+.abc-btn{flex:1;padding:7px 2px;border-radius:20px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:.15s;border:2px solid;text-align:center;background:#fff}
+.abc-btn-a{border-color:#2e7d32;color:#fff;background:#43a047}
+.abc-btn-b{border-color:#f9a825;color:#fff;background:#f9a825}
+.abc-btn-c{border-color:#e53935;color:#fff;background:#e53935}
+.abc-btn:hover{opacity:.85}
+.abc-btn-a.sel{background:#1b5e20;border-color:#1b5e20}
+.abc-btn-b.sel{background:#bf360c;color:#fff;border-color:#bf360c}
+.abc-btn-c.sel{background:#b71c1c;color:#fff;border-color:#b71c1c}
+
+.sec-card.status-a{border-color:#2e7d32}
+.sec-card.status-a .sc-hd{background:#e8f5e9 !important;border-bottom-color:#2e7d32 !important}
+.sec-card.status-b{border-color:#f9a825}
+.sec-card.status-b .sc-hd{background:#fff9e6 !important;border-bottom-color:#f9a825 !important}
+.sec-card.status-c{border-color:#e53935}
+.sec-card.status-c .sc-hd{background:#fce8e8 !important;border-bottom-color:#e53935 !important}
+.sec-card.coming-soon{opacity:.6}
+.sec-card.coming-soon .sc-hd{background:#f5f5f5 !important;border-bottom-color:#bbb !important}
+.sec-card.coming-soon .sc-num{background:#999 !important}
+.sec-card.coming-soon .sc-title{color:#888 !important}
+
+.flow{background:#fff;border-radius:14px;border:1px solid #dde3ee;padding:14px 16px;margin-bottom:20px}
+.flow-title{font-size:14px;font-weight:700;color:#a86000;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #FFB300}
+.flow-steps{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.flow-step{background:#fff8e7;border:1px solid #f4c870;border-radius:8px;padding:7px 12px;font-size:12px;color:#a86000;font-weight:700;white-space:nowrap}
+.flow-arrow{color:#FFB300;font-size:16px;font-weight:700}
+
+.nav-links{display:flex;gap:10px;justify-content:center;margin:24px 0 8px;flex-wrap:wrap}
+.nav-link{padding:10px 18px;border-radius:10px;border:1.5px solid #dde3ee;background:#fff;color:#0d4f7a;font-size:13px;font-weight:700;text-decoration:none;transition:.15s}
+.nav-link:hover{border-color:#a86000;color:#a86000;background:#fff8e7}
+.nav-link.active{background:#a86000;color:#fff;border-color:#a86000}
+
+canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;display:none}
+</style>
+</head>
+<body>
+<canvas id="cc"></canvas>
+
+<div class="top-header">
+  <h1>📝 GAMBA 文章題 単元表</h1>
+  <p>中学数学・江原予備校 ― 文章を読み解いて式を立てよう ―</p>
+  <div class="summary-bar">
+    <div class="sum-item"><span class="sum-dot sum-dot-a"></span>A わかった <span class="sum-count" id="cnt-a">0</span> 単元</div>
+    <div class="sum-item"><span class="sum-dot sum-dot-b"></span>B 要復習 <span class="sum-count" id="cnt-b">0</span> 単元</div>
+    <div class="sum-item"><span class="sum-dot sum-dot-c"></span>C 何度も復習 <span class="sum-count" id="cnt-c">0</span> 単元</div>
+    <div class="sum-item"><span class="sum-dot sum-dot-n"></span>未実施 <span class="sum-count" id="cnt-n">35</span> 単元</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="nav-links">
+    <a href="https://realizefield.github.io/j-math-kansu/kansu_index.html" class="nav-link">📊 関数</a>
+    <a href="bunshou_index.html" class="nav-link active">📝 文章題</a>
+  </div>
+
+  <div class="flow">
+    <div class="flow-title">📖 学習の流れ</div>
+    <div class="flow-steps">
+      <div class="flow-step">① 例題で考え方を学ぶ</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">② 基本演習</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">③ 応用演習</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">④ 確認問題</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">⑤ A/B/C で自己評価</div>
+    </div>
+  </div>
+
+  <!-- Unit 1: 中1 一次方程式の文章題 -->
+  <div class="unit">
+    <div class="unit-hd unit-hd-1"><span class="unit-num">中1</span><span class="unit-title">一次方程式の文章題</span><span class="unit-badge">★ 式を立てる基礎</span></div>
+    <div class="unit-body">
+
+      <div class="group-label">📦 個数と代金</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-1" data-id="ME1">
+          <a href="ME1.html"><div class="sc-hd"><span class="sc-num">ME-1</span><span class="sc-title">個数と代金</span><span class="sc-stars">★☆☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>方程式の文章題の基本</li><li>式の立て方</li><li>表で整理する</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME1.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME1','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME1','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME1','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME2">
+          <a href="ME2.html"><div class="sc-hd"><span class="sc-num">ME-2</span><span class="sc-title">個数と代金②</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>応用パターン</li><li>複数の品物</li><li>合計金額の問題</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME2.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME2','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME2','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME2','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+      <div class="group-label">🏃 速さ・時間・距離</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-1" data-id="ME2-0">
+          <a href="ME2-0.html"><div class="sc-hd"><span class="sc-num">ME-2-0</span><span class="sc-title">速さの基本</span><span class="sc-stars">★☆☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>速さ・時間・距離の関係</li><li>単位の換算</li><li>「はじき」の図</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME2-0.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME2-0','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME2-0','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME2-0','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME2-1">
+          <a href="ME2-1.html"><div class="sc-hd"><span class="sc-num">ME-2-1</span><span class="sc-title">速さ① 往復の問題</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>往復の時間と距離</li><li>線分図で整理</li><li>方程式の立て方</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME2-1.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME2-1','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME2-1','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME2-1','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME2-2">
+          <a href="ME2-2.html"><div class="sc-hd"><span class="sc-num">ME-2-2</span><span class="sc-title">速さ② 出会いの問題</span><span class="sc-stars">★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>2人が出会う時刻</li><li>反対方向に進む</li><li>距離の和</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME2-2.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME2-2','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME2-2','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME2-2','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME2-3">
+          <a href="ME2-3.html"><div class="sc-hd"><span class="sc-num">ME-2-3</span><span class="sc-title">速さ③ 追いつきの問題</span><span class="sc-stars">★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>追いつくまでの時間</li><li>同じ方向に進む</li><li>距離の差</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME2-3.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME2-3','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME2-3','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME2-3','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+      <div class="group-label">👥 過不足・年齢</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-1" data-id="ME3">
+          <a href="ME3.html"><div class="sc-hd"><span class="sc-num">ME-3</span><span class="sc-title">過不足の問題</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>あまる・足りない</li><li>人数を求める</li><li>2通りの配り方</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME3.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME3','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME3','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME3','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME4">
+          <a href="ME4.html"><div class="sc-hd"><span class="sc-num">ME-4</span><span class="sc-title">年齢の問題</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>何年後・何年前</li><li>2人の年齢の関係</li><li>方程式で解く</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME4.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME4','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME4','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME4','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+      <div class="group-label">📐 解と定数・比例式</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-1" data-id="ME5">
+          <a href="ME5.html"><div class="sc-hd"><span class="sc-num">ME-5</span><span class="sc-title">解と定数 a の問題</span><span class="sc-stars">★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>方程式の解から係数</li><li>aの値を求める</li><li>逆問題</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME5.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME5','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME5','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME5','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME6">
+          <a href="ME6.html"><div class="sc-hd"><span class="sc-num">ME-6</span><span class="sc-title">比例式の利用①</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>比例式の基本</li><li>a:b = c:d → ad=bc</li><li>方程式に直す</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME6.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME6','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME6','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME6','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME6-1">
+          <a href="ME6-1.html"><div class="sc-hd"><span class="sc-num">ME-6-1</span><span class="sc-title">比例式の利用②</span><span class="sc-stars">★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>合計から求める</li><li>比に分ける</li><li>応用パターン</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME6-1.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME6-1','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME6-1','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME6-1','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME6-2">
+          <a href="ME6-2.html"><div class="sc-hd"><span class="sc-num">ME-6-2</span><span class="sc-title">比例式の利用③</span><span class="sc-stars">★★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>変化後の比</li><li>応用問題</li><li>連立的な考え方</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME6-2.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME6-2','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME6-2','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME6-2','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+      <div class="group-label">🧂 食塩水の濃度</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-1" data-id="ME9-1">
+          <a href="ME9-1.html"><div class="sc-hd"><span class="sc-num">ME-9-1</span><span class="sc-title">食塩水の基礎</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>濃度とは何か</li><li>食塩の量の求め方</li><li>濃度の公式</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME9-1.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME9-1','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME9-1','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME9-1','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME9-2">
+          <a href="ME9-2.html"><div class="sc-hd"><span class="sc-num">ME-9-2</span><span class="sc-title">食塩水を加える</span><span class="sc-stars">★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>2種類の食塩水を混ぜる</li><li>食塩の量に注目</li><li>濃度を求める</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME9-2.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME9-2','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME9-2','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME9-2','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME9-3">
+          <a href="ME9-3.html"><div class="sc-hd"><span class="sc-num">ME-9-3</span><span class="sc-title">食塩を加える</span><span class="sc-stars">★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>食塩のみを追加</li><li>濃くする問題</li><li>全体の量の変化</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME9-3.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME9-3','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME9-3','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME9-3','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME9-4">
+          <a href="ME9-4.html"><div class="sc-hd"><span class="sc-num">ME-9-4</span><span class="sc-title">水を加える・蒸発</span><span class="sc-stars">★★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>水でうすめる</li><li>蒸発で濃くする</li><li>食塩の量は不変</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME9-4.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME9-4','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME9-4','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME9-4','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+      <div class="group-label">🎯 入試応用</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-1" data-id="ME7">
+          <a href="ME7.html"><div class="sc-hd"><span class="sc-num">ME-7</span><span class="sc-title">桁の問題</span><span class="sc-stars">★★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>2桁・3桁の入れかえ</li><li>10x+y の表し方</li><li>入試典型</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME7.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME7','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME7','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME7','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME8">
+          <a href="ME8.html"><div class="sc-hd"><span class="sc-num">ME-8</span><span class="sc-title">列車の問題</span><span class="sc-stars">★★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>鉄橋・トンネル</li><li>列車の長さを求める</li><li>速さと長さ</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME8.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME8','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME8','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME8','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-1" data-id="ME10">
+          <a href="ME10.html"><div class="sc-hd"><span class="sc-num">ME-10</span><span class="sc-title">時計の針の追いつき</span><span class="sc-stars">★★★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>長針と短針</li><li>角度の計算</li><li>難関校対策</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="ME10.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME10','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME10','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME10','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Unit 2: 中2 連立方程式の文章題 -->
+  <div class="unit">
+    <div class="unit-hd unit-hd-2"><span class="unit-num">中2</span><span class="unit-title">連立方程式の文章題</span><span class="unit-badge">⭐ 2つの式で解く</span></div>
+    <div class="unit-body">
+
+      <div class="group-label">📦 個数と代金</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-2" data-id="MR1">
+          <a href="MR1.html"><div class="sc-hd"><span class="sc-num">MR-1</span><span class="sc-title">個数と代金</span><span class="sc-stars">★☆☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>連立方程式の基礎</li><li>2つの未知数</li><li>加減法・代入法</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MR1.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MR1','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MR1','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MR1','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+      <div class="group-label">🏃 速さ・時間・距離</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-2" data-id="MR2">
+          <a href="MR2.html"><div class="sc-hd"><span class="sc-num">MR-2</span><span class="sc-title">時間と距離①</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>片道2区間の問題</li><li>線分図で整理</li><li>分数の方程式</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MR2.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MR2','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MR2','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MR2','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-2" data-id="MR3">
+          <a href="MR3.html"><div class="sc-hd"><span class="sc-num">MR-3</span><span class="sc-title">時間と距離②</span><span class="sc-stars">★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>往復・峠越え</li><li>上りと下りの速さ</li><li>富山県・熊本県の入試問題</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MR3.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MR3','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MR3','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MR3','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-2" data-id="MR4">
+          <a href="MR4.html"><div class="sc-hd"><span class="sc-num">MR-4</span><span class="sc-title">出会い・追いつき</span><span class="sc-stars">★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>池の周りの問題</li><li>反対方向と同方向</li><li>1周分の差</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MR4.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MR4','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MR4','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MR4','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-2" data-id="MR5">
+          <a href="MR5.html"><div class="sc-hd"><span class="sc-num">MR-5</span><span class="sc-title">鉄橋とトンネル</span><span class="sc-stars">★★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>列車の長さと速さ</li><li>渡る・隠れる・すれちがう</li><li>入試典型</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MR5.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MR5','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MR5','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MR5','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+      <div class="group-label">🧂 食塩水・割合・整数</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-2" data-id="MR6">
+          <a href="MR6.html"><div class="sc-hd"><span class="sc-num">MR-6</span><span class="sc-title">食塩水の濃度</span><span class="sc-stars">★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>2種類の食塩水を混ぜる</li><li>食塩の量に注目</li><li>連立で解く</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MR6.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MR6','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MR6','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MR6','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-2" data-id="MR7">
+          <a href="MR7.html"><div class="sc-hd"><span class="sc-num">MR-7</span><span class="sc-title">生徒数の増減</span><span class="sc-stars">★★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>増加率・減少率</li><li>パーセントの計算</li><li>複数年の変化</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MR7.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MR7','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MR7','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MR7','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-2" data-id="MR8">
+          <a href="MR8.html"><div class="sc-hd"><span class="sc-num">MR-8</span><span class="sc-title">整数問題</span><span class="sc-stars">★★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>2桁・3桁の自然数</li><li>位の入れかえ</li><li>各位の和の関係</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MR8.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MR8','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MR8','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MR8','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Unit 3: 中3 二次方程式の文章題 -->
+  <div class="unit">
+    <div class="unit-hd unit-hd-3"><span class="unit-num">中3</span><span class="unit-title">二次方程式の文章題</span><span class="unit-badge">🌟 より深い問題へ</span></div>
+    <div class="unit-body">
+
+      <div class="group-label">🔢 係数・解を求める</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-3" data-id="MQ1">
+          <a href="MQ-1.html"><div class="sc-hd"><span class="sc-num">MQ-1</span><span class="sc-title">1つの解からaの値を求める</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>解を代入してaを求める</li><li>もう1つの解を因数分解で求める</li><li>係数にaを含む場合（やや難）</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MQ-1.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MQ1','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MQ1','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MQ1','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-3" data-id="MQ2">
+          <a href="MQ-2.html"><div class="sc-hd"><span class="sc-num">MQ-2</span><span class="sc-title">2つの解からa，bを求める</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>2つの解をそれぞれ代入</li><li>連立方程式でa，bを求める</li><li>係数が3の場合（やや難）</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MQ-2.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MQ2','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MQ2','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MQ2','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+      <div class="group-label">🔢 連続する数を求める</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-3" data-id="MQ3">
+          <a href="MQ-3.html"><div class="sc-hd"><span class="sc-num">MQ-3</span><span class="sc-title">連続する3つの数を求める</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>χ，χ+1，χ+2 とおく</li><li>「は・が」→ ＝ の式を作る</li><li>最大の平方と他2数の積（やや難）</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MQ-3.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MQ3','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MQ3','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MQ3','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-3" data-id="MQ4">
+          <a href="MQ-4.html"><div class="sc-hd"><span class="sc-num">MQ-4</span><span class="sc-title">連続する偶数・奇数を求める</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>χ，χ+2，χ+4 とおく（差が2）</li><li>偶数・奇数で同じ置き方</li><li>2番目の二乗と残りの和（やや難）</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MQ-4.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MQ4','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MQ4','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MQ4','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+      <div class="group-label">📐 図形・面積・体積</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-3" data-id="MQ5">
+          <a href="MQ-5.html"><div class="sc-hd"><span class="sc-num">MQ-5</span><span class="sc-title">道幅を求める</span><span class="sc-stars">★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>道を端に平行移動する発想</li><li>（縦－χ）（横－χ）で式を作る</li><li>外側に道がある場合（やや難）</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MQ-5.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MQ5','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MQ5','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MQ5','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-3" data-id="MQ6">
+          <a href="MQ-6.html"><div class="sc-hd"><span class="sc-num">MQ-6</span><span class="sc-title">体積を求める（4すみを切り取る）</span><span class="sc-stars">★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>底面の縦・横・高さを確認</li><li>（縦－○）（横－○）×高さ＝体積</li><li>横が縦の2倍のタイプ（やや難）</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MQ-6.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MQ6','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MQ6','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MQ6','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+      <div class="group-label">⏱ 動点・総合</div>
+      <div class="sec-grid">
+        <div class="sec-card grade-3" data-id="MQ7">
+          <a href="MQ-7.html"><div class="sc-hd"><span class="sc-num">MQ-7</span><span class="sc-title">動点の問題</span><span class="sc-stars">★★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>点の位置をχで表す</li><li>全体から引いて面積を求める</li><li>変域で場合分け（アニメーション付き）</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MQ-7.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MQ7','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MQ7','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MQ7','c',this)">C 何度も</button></div>
+        </div>
+        <div class="sec-card grade-3" data-id="MQ8">
+          <a href="MQ-8.html"><div class="sc-hd"><span class="sc-num">MQ-8</span><span class="sc-title">様々な問題（総合）</span><span class="sc-stars">★★★★</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>まわりの長さと面積</li><li>平行四辺形・正方形</li><li>入試頻出の総合問題</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="MQ-8.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('MQ8','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('MQ8','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('MQ8','c',this)">C 何度も</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="nav-links">
+    <a href="https://realizefield.github.io/j-math-kansu/kansu_index.html" class="nav-link">← 関数の単元表へ</a>
+  </div>
+
+</div>
+
+<script>
+var STORAGE_KEY = 'gamba_bunshou_status_v1';
+var status = {};
+var activeIds = ['ME1','ME2','ME2-0','ME2-1','ME2-2','ME2-3','ME3','ME4','ME5','ME6','ME6-1','ME6-2','ME7','ME8','ME9-1','ME9-2','ME9-3','ME9-4','ME10','MR1','MR2','MR3','MR4','MR5','MR6','MR7','MR8','MQ1','MQ2','MQ3','MQ4','MQ5','MQ6','MQ7','MQ8'];
+
+try {
+  var saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) status = JSON.parse(saved);
+} catch(e) {}
+
+function applyStoredStatus() {
+  Object.keys(status).forEach(function(id) {
+    var grade = status[id];
+    var card = document.querySelector('[data-id="'+id+'"]');
+    if (!card) return;
+    card.classList.add('status-' + grade);
+    var btnClass = 'abc-btn-' + grade;
+    var btn = card.querySelector('.' + btnClass);
+    if (btn) btn.classList.add('sel');
+  });
+}
+
+function saveStatus() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(status)); } catch(e) {}
+}
+
+function setABC(id, grade, btn) {
+  var card = document.querySelector('[data-id="'+id+'"]');
+  if (!card) return;
+  if (status[id] === grade) {
+    delete status[id];
+    card.className = card.className.replace(/ ?status-[abc]/g,'');
+    card.querySelectorAll('.abc-btn').forEach(function(b){b.classList.remove('sel');});
+    saveStatus();
+    updateSummary();
+    return;
+  }
+  status[id] = grade;
+  card.className = card.className.replace(/ ?status-[abc]/g,'');
+  card.classList.add('status-' + grade);
+  card.querySelectorAll('.abc-btn').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+  saveStatus();
+  if (grade === 'a') confetti();
+  updateSummary();
+}
+
+function updateSummary() {
+  var ca=0, cb=0, cc=0, cn=0;
+  activeIds.forEach(function(id) {
+    var s = status[id];
+    if (s === 'a') ca++;
+    else if (s === 'b') cb++;
+    else if (s === 'c') cc++;
+    else cn++;
+  });
+  document.getElementById('cnt-a').textContent = ca;
+  document.getElementById('cnt-b').textContent = cb;
+  document.getElementById('cnt-c').textContent = cc;
+  document.getElementById('cnt-n').textContent = cn;
+}
+
+function confetti() {
+  var cv = document.getElementById('cc');
+  cv.width = window.innerWidth;
+  cv.height = window.innerHeight;
+  cv.style.display = 'block';
+  var ctx = cv.getContext('2d');
+  var cols = ['#f9a825','#0d9478','#2055b0','#7d3eb0','#e53935','#2e7d32','#ff6f00','#ff4081'];
+  var ps = [];
+  for (var k=0; k<130; k++) {
+    ps.push({
+      x: Math.random() * cv.width,
+      y: -20 - Math.random() * 180,
+      w: 7 + Math.random() * 9,
+      h: 3 + Math.random() * 5,
+      c: cols[Math.floor(Math.random() * cols.length)],
+      s: 2 + Math.random() * 4,
+      a: Math.random() * 360,
+      sp: 3 - Math.random() * 6,
+      d: (Math.random() - 0.5) * 2.5
+    });
+  }
+  var fr = 0;
+  function draw() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ps.forEach(function(p) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.a * Math.PI / 180);
+      ctx.fillStyle = p.c;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+      p.y += p.s;
+      p.x += p.d;
+      p.a += p.sp;
+    });
+    fr++;
+    if (fr < 100) requestAnimationFrame(draw);
+    else {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      cv.style.display = 'none';
+    }
+  }
+  draw();
+}
+
+applyStoredStatus();
+updateSummary();
+</script>
+</body>
+</html>
