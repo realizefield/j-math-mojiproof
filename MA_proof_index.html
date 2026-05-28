@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>GAMBA 文字式の証明 単元表</title>
+<title>GAMBA 中2数学 単元表</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'BIZ UDGothic','Hiragino Kaku Gothic Pro','Meiryo',sans-serif;background:#eef2f7;color:#1a1a2e;min-height:100vh;font-size:15px}
@@ -83,13 +83,13 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;display:none
 <canvas id="cc"></canvas>
 
 <div class="top-header">
-  <h1>✏️ GAMBA 文字式の証明 単元表</h1>
-  <p>中学2年数学・江原予備校 ― 文字式を使って証明しよう ―</p>
+  <h1>✏️ GAMBA 中2数学 単元表</h1>
+  <p>中学2年数学・江原予備校 ― 文字式を使いこなそう ―</p>
   <div class="summary-bar">
     <div class="sum-item"><span class="sum-dot sum-dot-a"></span>A わかった <span class="sum-count" id="cnt-a">0</span> 単元</div>
     <div class="sum-item"><span class="sum-dot sum-dot-b"></span>B 要復習 <span class="sum-count" id="cnt-b">0</span> 単元</div>
     <div class="sum-item"><span class="sum-dot sum-dot-c"></span>C 何度も復習 <span class="sum-count" id="cnt-c">0</span> 単元</div>
-    <div class="sum-item"><span class="sum-dot sum-dot-n"></span>未実施 <span class="sum-count" id="cnt-n">10</span> 単元</div>
+    <div class="sum-item"><span class="sum-dot sum-dot-n"></span>未実施 <span class="sum-count" id="cnt-n">11</span> 単元</div>
   </div>
 </div>
 
@@ -110,7 +110,26 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;display:none
     </div>
   </div>
 
-  <!-- ══ Unit 1: 倍数の証明 ══ -->
+  <!-- ══ Unit 0: 文字式について解く ══ -->
+  <div class="unit">
+    <div class="unit-hd unit-hd-1"><span class="unit-num">中2</span><span class="unit-title">文字式について解く</span><span class="unit-badge">等式変形 STEP 1〜8</span></div>
+    <div class="unit-body">
+
+      <div class="group-label">📐 等式変形の基礎から応用へ</div>
+      <div class="sec-grid">
+
+        <div class="sec-card grade-2" data-id="ME01">
+          <a href="moji_lesson.html"><div class="sc-hd"><span class="sc-num">ME-01</span><span class="sc-title">文字式について解く</span><span class="sc-stars">★★☆</span></div>
+          <div class="sc-body"><ul class="sc-topics"><li>STEP1: 移項のみ（符号変化）</li><li>STEP2〜4: 係数で割る・ax+by+c=0型</li><li>STEP5〜8: π・分数係数・括弧あり</li></ul></div></a>
+          <div class="sc-body" style="padding-top:0"><div class="sc-btn-row"><a class="sc-btn sc-btn-learn" href="moji_lesson.html">学習を始める</a></div></div>
+          <div class="abc-row"><button class="abc-btn abc-btn-a" onclick="setABC('ME01','a',this)">A OK</button><button class="abc-btn abc-btn-b" onclick="setABC('ME01','b',this)">B 要復習</button><button class="abc-btn abc-btn-c" onclick="setABC('ME01','c',this)">C 何度も</button></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+    <!-- ══ Unit 1: 倍数の証明 ══ -->
   <div class="unit">
     <div class="unit-hd unit-hd-1"><span class="unit-num">中2</span><span class="unit-title">倍数の証明</span><span class="unit-badge">○ × (整数) の形をつくろう</span></div>
     <div class="unit-body">
@@ -239,7 +258,7 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;display:none
 <script>
 var STORAGE_KEY='gamba_ma_proof_status_v1';
 var status={};
-var activeIds=['MA01','MA02','MA03','MA04','MA05','MA06','MA07','MA08','MA09'];
+var activeIds=['ME01','MA01','MA02','MA03','MA04','MA05','MA06','MA07','MA08','MA09'];
 try{var saved=localStorage.getItem(STORAGE_KEY);if(saved)status=JSON.parse(saved);}catch(e){}
 function applyStoredStatus(){Object.keys(status).forEach(function(id){var grade=status[id];var card=document.querySelector('[data-id="'+id+'"]');if(!card)return;card.classList.add('status-'+grade);var btn=card.querySelector('.abc-btn-'+grade);if(btn)btn.classList.add('sel');});}
 function saveStatus(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(status));}catch(e){}}

@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAMBA｜文字式について解く</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f4ef;--sf:#fff;--sf2:#f0ede6;--bd:#d6d2c8;--bd2:#bcb8ae;--pink:#d93652;--teal:#0d9478;--blue:#2055b0;--amber:#a86000;--tl:#e6f5f1;--bl:#eaf0fb;--al:#fdf2dd;--pl:#fde8eb;--text:#1a1814;--text2:#58544c;--text3:#98948c;--r:12px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;min-height:100vh;}
+
+/* ヘッダー */
+.site-header{background:var(--sf);border-bottom:1px solid var(--bd);padding:.65rem 1.5rem;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+.logo{font-family:'Shippori Mincho',serif;font-size:1.05rem;color:var(--pink);}
+.logo-sep{color:var(--bd2);}
+.logo-sub{font-size:12px;color:var(--text2);}
+
+/* タブナビ */
+.tab-nav{background:var(--sf);border-bottom:2px solid var(--bd);position:sticky;top:46px;z-index:99;display:flex;padding:0 1rem;overflow-x:auto;scrollbar-width:none;}
+.tab-nav::-webkit-scrollbar{display:none;}
+.tab-btn{padding:.7rem .9rem;font-size:13px;font-weight:600;color:var(--text2);background:none;border:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif;display:flex;align-items:center;gap:5px;border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .15s;white-space:nowrap;flex-shrink:0;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--pink);border-bottom-color:var(--pink);}
+.tab-pip{width:20px;height:20px;border-radius:50%;background:#fde8eb;color:var(--pink);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+.tab-pip.done{background:var(--teal);color:#fff;}
+
+/* ページ */
+.page{display:none;}
+.page.active{display:block;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+main{max-width:720px;margin:0 auto;padding:1.5rem 1rem 7rem;}
+
+/* ページヘッダー */
+.page-hdr{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1rem 1.4rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:12px;}
+.page-hdr-icon{width:38px;height:38px;border-radius:9px;background:var(--pink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;}
+.page-hdr-title{font-size:15px;font-weight:700;margin-bottom:2px;}
+.page-hdr-desc{font-size:12px;color:var(--text2);}
+
+/* カード */
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1.4rem 1.5rem;margin-bottom:.9rem;}
+.clabel{font-size:11px;font-weight:700;letter-spacing:.1em;margin-bottom:.85rem;display:flex;align-items:center;gap:6px;}
+.clabel::before{content:'';width:3px;height:14px;border-radius:2px;display:inline-block;}
+.clabel.ex{color:var(--pink);}.clabel.ex::before{background:var(--pink);}
+.clabel.mt{color:var(--teal);}.clabel.mt::before{background:var(--teal);}
+.q-text{font-size:15px;line-height:1.95;color:var(--text);margin-bottom:1rem;}
+.prob-src{display:inline-block;font-size:11px;color:var(--text3);background:var(--sf2);border:1px solid var(--bd);border-radius:20px;padding:2px 9px;margin-left:6px;}
+.hl-x{color:var(--pink);font-weight:700;}
+
+/* 解説ボックス */
+.exp-box{background:var(--sf2);border-radius:9px;padding:.9rem 1.15rem;margin-bottom:.75rem;border-left:3px solid var(--teal);}
+.exp-box h4{font-size:11px;color:var(--teal);font-weight:700;letter-spacing:.06em;margin-bottom:.35rem;}
+.exp-box p{font-size:14px;line-height:1.9;color:var(--text);white-space:pre-wrap;}
+.exp-box.blue{border-color:var(--blue);}.exp-box.blue h4{color:var(--blue);}
+.exp-box.amber{border-color:var(--amber);}.exp-box.amber h4{color:var(--amber);}
+.point-box{background:var(--al);border:1px solid #e0c888;border-radius:9px;padding:.8rem 1.1rem;margin-bottom:.9rem;font-size:13px;color:var(--amber);line-height:1.8;}
+.point-box strong{display:block;font-size:10px;letter-spacing:.08em;margin-bottom:3px;}
+.warn-box{background:var(--pl);border:1px solid #e8a0ac;border-radius:9px;padding:.8rem 1.1rem;margin-bottom:.9rem;font-size:13px;color:var(--pink);line-height:1.8;}
+.warn-box strong{display:block;font-size:10px;letter-spacing:.08em;margin-bottom:3px;}
+
+/* 練習区切り */
+.mt-divider{display:flex;align-items:center;gap:.8rem;margin:1.4rem 0 1rem;}
+.mt-divider::before,.mt-divider::after{content:'';flex:1;height:1px;background:var(--bd);}
+.mt-divider span{font-size:11px;font-weight:700;color:var(--teal);background:var(--tl);border:1px solid var(--teal);border-radius:20px;padding:3px 12px;white-space:nowrap;}
+
+/* 4択 */
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:.9rem;}
+.ch{background:var(--sf2);border:1.5px solid var(--bd);border-radius:9px;padding:10px 8px;font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s;font-family:'Noto Sans JP',sans-serif;width:100%;text-align:left;line-height:1.5;}
+.ch:hover:not(:disabled){border-color:var(--blue);background:var(--bl);}
+.ch:disabled{cursor:default;}
+.ch.ok{border-color:var(--teal);background:var(--tl);color:var(--teal);}
+.ch.ng{border-color:var(--pink);background:var(--pl);color:var(--pink);}
+.ch.reveal{border-color:var(--teal);background:var(--tl);color:var(--teal);opacity:.65;}
+.cnum{width:24px;height:24px;border-radius:50%;background:var(--bd);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.ch.ok .cnum{background:var(--teal);color:#fff;}
+.ch.ng .cnum{background:var(--pink);color:#fff;}
+.ch.reveal .cnum{background:var(--teal);color:#fff;}
+
+/* フィードバック */
+.fb-ok{display:none;align-items:center;gap:12px;background:#e6faf3;border:2px solid #0d9478;border-radius:12px;padding:12px 16px;margin:8px 0 4px;animation:fbPop .3s ease;}
+.fb-ng{display:none;align-items:center;gap:12px;background:#fde8eb;border:2px solid #d93652;border-radius:12px;padding:12px 16px;margin:8px 0 4px;animation:fbPop .3s ease;}
+@keyframes fbPop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.fb-icon{font-size:1.7rem;flex-shrink:0;}
+.fb-text{font-size:13px;font-weight:700;line-height:1.5;}
+.fb-ok .fb-text{color:#0d9478;}
+.fb-ng .fb-text{color:#d93652;}
+.fb-sub{font-size:11px;font-weight:400;display:block;margin-top:1px;opacity:.8;}
+.reset-btn{background:none;border:1.5px solid #d93652;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;color:#d93652;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-left:auto;flex-shrink:0;transition:all .15s;white-space:nowrap;}
+.reset-btn:hover{background:#d93652;color:#fff;}
+
+/* 解説エリア */
+.exp-area{display:none;margin-top:.8rem;animation:slideDown .25s ease;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+
+/* 分数 */
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 3px;font-size:.85em;line-height:1;}
+.frac .num{padding:0 4px 2px;text-align:center;white-space:nowrap;}
+.frac .bar{border-top:1.5px solid currentColor;width:100%;min-width:1em;}
+.frac .den{padding:2px 4px 0;text-align:center;white-space:nowrap;}
+
+/* ナビボタン */
+.nav-row{display:flex;flex-direction:column;gap:8px;margin-top:1.6rem;}
+.btn-next{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:var(--pink);border:none;border-radius:var(--r);font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .15s;}
+.btn-next:hover{background:#b82d44;}
+.btn-index{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--sf2);border:2px solid var(--bd2);border-radius:var(--r);font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .15s;}
+.btn-index:hover{border-color:var(--blue);color:var(--blue);background:var(--bl);}
+
+/* 完了バナー */
+.complete-banner{background:linear-gradient(135deg,#e6faf3,#f0fdf8);border:2px solid var(--teal);border-radius:14px;padding:1.4rem;text-align:center;margin-top:1.4rem;}
+.complete-banner .ci{font-size:2.2rem;margin-bottom:.4rem;}
+.complete-banner .ct{font-size:17px;font-weight:700;color:var(--teal);margin-bottom:.3rem;}
+.complete-banner .cs{font-size:12px;color:var(--text2);}
+
+/* 音声ボタン */
+.speak-btn{display:flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--teal);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--teal);cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .15s;margin-left:auto;}
+.speak-btn:hover{background:var(--teal);color:#fff;}
+.speak-btn.speaking{background:var(--teal);color:#fff;animation:pulse .8s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+.clabel-row{display:flex;align-items:center;margin-bottom:.85rem;}
+.clabel-row .clabel{margin-bottom:0;flex:1;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="logo">GAMBA</span><span class="logo-sep">|</span>
+  <span class="logo-sub">中学2年 数学 ／ 文字式について解く</span>
+</header>
+
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" id="tab-s1" onclick="goTab('s1')"><span class="tab-pip" id="pip-s1">1</span>移項</button>
+  <button class="tab-btn" id="tab-s2" onclick="goTab('s2')"><span class="tab-pip" id="pip-s2">2</span>正係数</button>
+  <button class="tab-btn" id="tab-s3" onclick="goTab('s3')"><span class="tab-pip" id="pip-s3">3</span>負係数</button>
+  <button class="tab-btn" id="tab-s4" onclick="goTab('s4')"><span class="tab-pip" id="pip-s4">4</span>0型</button>
+  <button class="tab-btn" id="tab-s5" onclick="goTab('s5')"><span class="tab-pip" id="pip-s5">5</span>π</button>
+  <button class="tab-btn" id="tab-s6" onclick="goTab('s6')"><span class="tab-pip" id="pip-s6">6</span>分数係数</button>
+  <button class="tab-btn" id="tab-s7" onclick="goTab('s7')"><span class="tab-pip" id="pip-s7">7</span>分数式</button>
+  <button class="tab-btn" id="tab-s8" onclick="goTab('s8')"><span class="tab-pip" id="pip-s8">8</span>括弧</button>
+</nav>
+
+<main>
+
+<!-- ===== STEP 1 ===== -->
+<div class="page active" id="page-s1">
+  <div class="page-hdr">
+    <div class="page-hdr-icon">S1</div>
+    <div>
+      <div class="page-hdr-title">STEP 1 ─ 移項のみ</div>
+      <div class="page-hdr-desc">「〇について解く」の基本</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel-row">
+      <div class="clabel ex">例題 1</div>
+      <button class="speak-btn" id="speak-s1" onclick="toggleSpeak('s1')" aria-label="音声で解説を聞く">🔊 解説を聞く</button>
+    </div>
+    <div id="script-s1" style="display:none">STEP1は、移項のみで解くパターンです。「xについて解く」とは、x＝の形に変形することです。例えば、x＋3＝yをxについて解くには、左辺の＋3を右辺に移項します。移項すると符号が必ず変わります。プラス3がマイナス3になるので、答えは x＝y－3 です。移項のポイントは、プラスをマイナスに、マイナスをプラスに、符号が反対になることです。</div>
+    <div class="point-box"><strong>用語の確認</strong>等式 <span class="hl-x">x + 3 = y</span> を「<strong>x について解く</strong>」とは，<strong>x = …… の形</strong>に変形することをいいます。</div>
+    <div class="q-text">x + 3 = y &nbsp;を「x = ……」の形にしなさい。</div>
+    <div class="exp-box"><h4>STEP 1　x だけを左辺に残す</h4><p>左辺が「x + 3」なので，余分な <strong>+3</strong> を右辺に移項します。
+移項すると符号が必ず変わります（+3 → −3）。</p></div>
+    <div class="exp-box blue"><h4>STEP 2　式の変形</h4><p>x + 3 = y
+<strong>x = y − 3</strong>　← +3 を移項すると −3 になります</p></div>
+    <div class="exp-box amber"><h4>⭐ 移項のルール</h4><p>　＋A を移項 → −A　／　−A を移項 → ＋A</p></div>
+  </div>
+  <div class="mt-divider"><span>🖊 練習問題</span></div>
+  <div class="card">
+    <div class="clabel mt">練習 1-①</div>
+    <div class="q-text">p + 5 = q &nbsp;を (p) について解きなさい。</div>
+    <div class="choices" id="ch-s1q1">
+      <button class="ch" onclick="ans('s1q1',0,1)"><span class="cnum">1</span>p = q + 5</button>
+      <button class="ch" onclick="ans('s1q1',1,1)"><span class="cnum">2</span>p = q − 5</button>
+      <button class="ch" onclick="ans('s1q1',2,1)"><span class="cnum">3</span>p = −q − 5</button>
+      <button class="ch" onclick="ans('s1q1',3,1)"><span class="cnum">4</span>p = 5 − q</button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s1q1"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">+5 を移項 → −5 になります</span></span></div>
+    <div class="fb-ng" id="fb-ng-s1q1"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">移項すると符号が変わります</span></span><button class="reset-btn" onclick="resetQ('s1q1')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s1q1">
+      <div class="exp-box"><h4>解説</h4><p>p + 5 = q の <strong>+5</strong> を右辺に移項 → −5 に変わります。
+<strong>p = q − 5</strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① p = q + 5 → 移項したのに符号が変わっていません。
+③ p = −q − 5 → q は移項していないのに符号を変えています。
+④ p = 5 − q → 左右を入れ替えただけで移項になっていません。</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel mt">練習 1-②</div>
+    <div class="q-text">3x + y = −2 &nbsp;を (y) について解きなさい。</div>
+    <div class="choices" id="ch-s1q2">
+      <button class="ch" onclick="ans('s1q2',0,2)"><span class="cnum">1</span>y = −2 + 3x</button>
+      <button class="ch" onclick="ans('s1q2',1,2)"><span class="cnum">2</span>y = 3x + 2</button>
+      <button class="ch" onclick="ans('s1q2',2,2)"><span class="cnum">3</span>y = −2 − 3x</button>
+      <button class="ch" onclick="ans('s1q2',3,2)"><span class="cnum">4</span>y = 2 − 3x</button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s1q2"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">3x を移項 → −3x になります</span></span></div>
+    <div class="fb-ng" id="fb-ng-s1q2"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">移項した項だけ符号が変わります</span></span><button class="reset-btn" onclick="resetQ('s1q2')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s1q2">
+      <div class="exp-box"><h4>解説</h4><p>左辺の <strong>+3x</strong> を移項 → −3x。右辺の −2 はそのまま。
+<strong>y = −2 − 3x</strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① 3x の符号が変わっていません（+3x のまま）。
+② −2 は移項していないのに +2 にしています。
+④ −2 を +2 にしています。移項していない項の符号は変わりません。</p></div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn-next" onclick="goTab('s2')">STEP 2 へ進む →</button>
+    <button class="btn-index" onclick="goIndex()">📋 単元表に戻る</button>
+  </div>
+</div>
+
+<!-- ===== STEP 2 ===== -->
+<div class="page" id="page-s2">
+  <div class="page-hdr">
+    <div class="page-hdr-icon">S2</div>
+    <div>
+      <div class="page-hdr-title">STEP 2 ─ 係数が正の整数 → 両辺を割る</div>
+      <div class="page-hdr-desc">ax = （式） の形への変形</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel-row">
+      <div class="clabel ex">例題 2</div>
+      <button class="speak-btn" id="speak-s2" onclick="toggleSpeak('s2')" aria-label="音声で解説を聞く">🔊 解説を聞く</button>
+    </div>
+    <div id="script-s2" style="display:none">STEP2は、係数が正の整数のとき、両辺を割るパターンです。例えば、3x＝2y－3をxについて解くには、xの前についている3が係数です。両辺を3で割ると、xだけが残ります。右辺の2y－3も全体を3で割った分数になります。答えは x＝2y－3分の3 です。ax＝何かの形になったら、両辺を係数aで割るだけです。</div>
+    <div class="q-text">3x = 2y − 3 &nbsp;を (x) について解きなさい。</div>
+    <div class="exp-box"><h4>STEP 1　係数を消す</h4><p>左辺は「3x」。x の前の <span class="hl-x">3</span> を<strong>係数</strong>といいます。
+両辺を 3 で割ると x だけになります。</p></div>
+    <div class="exp-box blue"><h4>STEP 2　式の変形</h4><p><span class="frac"><span class="num">3x</span><span class="bar"></span><span class="den">3</span></span> = <span class="frac"><span class="num">2y − 3</span><span class="bar"></span><span class="den">3</span></span>
+<strong>x = <span class="frac"><span class="num">2y − 3</span><span class="bar"></span><span class="den">3</span></span></strong>　← 右辺全体を 3 で割った分数になります</p></div>
+    <div class="exp-box amber"><h4>⭐ ポイント</h4><p><strong>ax = （式）</strong> の形 → 両辺を係数 <strong>a</strong> で割るだけです。</p></div>
+  </div>
+  <div class="mt-divider"><span>🖊 練習問題</span></div>
+  <div class="card">
+    <div class="clabel mt">練習 2-①</div>
+    <div class="q-text">5a = 2b − 5c &nbsp;を (a) について解きなさい。</div>
+    <div class="choices" id="ch-s2q1">
+      <button class="ch" onclick="ans('s2q1',0,1)"><span class="cnum">1</span>a = <span class="frac"><span class="num">5b − 2c</span><span class="bar"></span><span class="den">5</span></span></button>
+      <button class="ch" onclick="ans('s2q1',1,1)"><span class="cnum">2</span>a = <span class="frac"><span class="num">2b − 5c</span><span class="bar"></span><span class="den">5</span></span></button>
+      <button class="ch" onclick="ans('s2q1',2,1)"><span class="cnum">3</span>a = <span class="frac"><span class="num">2b + 5c</span><span class="bar"></span><span class="den">5</span></span></button>
+      <button class="ch" onclick="ans('s2q1',3,1)"><span class="cnum">4</span>a = 2b − c</button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s2q1"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">右辺全体を 5 で割れました</span></span></div>
+    <div class="fb-ng" id="fb-ng-s2q1"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s2q1')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s2q1">
+      <div class="exp-box"><h4>解説</h4><p>÷5 → <strong>a = <span class="frac"><span class="num">2b − 5c</span><span class="bar"></span><span class="den">5</span></span></strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① 分子の項が入れ替わっています。÷5 しても順番は変わりません。
+③ −5c が +5c になっています。右辺は変形しないので符号は変わりません。
+④ 2b ÷ 5 = <span class="frac"><span class="num">2b</span><span class="bar"></span><span class="den">5</span></span> なので 2b のままにはなりません。</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel mt">練習 2-②<span class="prob-src">〈茨城県〉</span></div>
+    <div class="q-text">3a + b = 10 &nbsp;を (a) について解きなさい。</div>
+    <div class="choices" id="ch-s2q2">
+      <button class="ch" onclick="ans('s2q2',0,3)"><span class="cnum">1</span>a = <span class="frac"><span class="num">10 + b</span><span class="bar"></span><span class="den">3</span></span></button>
+      <button class="ch" onclick="ans('s2q2',1,3)"><span class="cnum">2</span>a = <span class="frac"><span class="num">b − 10</span><span class="bar"></span><span class="den">3</span></span></button>
+      <button class="ch" onclick="ans('s2q2',2,3)"><span class="cnum">3</span>a = 10 − b</button>
+      <button class="ch" onclick="ans('s2q2',3,3)"><span class="cnum">4</span>a = <span class="frac"><span class="num">10 − b</span><span class="bar"></span><span class="den">3</span></span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s2q2"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">移項してから係数で割る手順が完璧です</span></span></div>
+    <div class="fb-ng" id="fb-ng-s2q2"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s2q2')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s2q2">
+      <div class="exp-box"><h4>解説</h4><p>① b を移項（+b → −b）：3a = 10 − b
+② ÷3：<strong>a = <span class="frac"><span class="num">10 − b</span><span class="bar"></span><span class="den">3</span></span></strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① b を移項すると −b になるのに符号が変わっていません。
+② 10 は移項していないので変わりません。b だけが −b になります。
+③ 最後の ÷3 を忘れています。</p></div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn-next" onclick="goTab('s3')">STEP 3 へ進む →</button>
+    <button class="btn-index" onclick="goIndex()">📋 単元表に戻る</button>
+  </div>
+</div>
+
+<!-- ===== STEP 3 ===== -->
+<div class="page" id="page-s3">
+  <div class="page-hdr">
+    <div class="page-hdr-icon">S3</div>
+    <div>
+      <div class="page-hdr-title">STEP 3 ─ 係数が負の整数</div>
+      <div class="page-hdr-desc">分母がマイナスのとき，− を前に出す</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel-row">
+      <div class="clabel ex">例題 3</div>
+      <button class="speak-btn" id="speak-s3" onclick="toggleSpeak('s3')" aria-label="音声で解説を聞く">🔊 解説を聞く</button>
+    </div>
+    <div id="script-s3" style="display:none">STEP3は、係数がマイナスのときのパターンです。ここが苦手な人が多いポイントです。例えば、マイナス4a＝2b－5をaについて解くには、両辺をマイナス4で割ります。すると右辺の分母がマイナス4になります。分母がマイナスのときは、そのマイナスを分数全体の前に出します。答えは a＝マイナス（2b－5）分の4 です。</div>
+    <div class="warn-box"><strong>⚠️ ここが苦手ポイント！</strong>係数がマイナスのとき，分母の − を前に出す処理が必要です。</div>
+    <div class="q-text">−4a = 2b − 5 &nbsp;を (a) について解きなさい。</div>
+    <div class="exp-box"><h4>STEP 1　÷(−4) する</h4><p>a の係数が <span class="hl-x">−4</span> なので，両辺を −4 で割ります。
+右辺の分母が −4 になります。</p></div>
+    <div class="exp-box blue"><h4>STEP 2　分母の − を前に出す</h4><p><span class="frac"><span class="num">2b − 5</span><span class="bar"></span><span class="den">−4</span></span>　← 分母がマイナス！
+<strong>a = −<span class="frac"><span class="num">2b − 5</span><span class="bar"></span><span class="den">4</span></span></strong>　← − を分数全体の前に出します</p></div>
+    <div class="exp-box amber"><h4>⭐ ポイント</h4><p><span class="frac"><span class="num">A</span><span class="bar"></span><span class="den">−n</span></span> = −<span class="frac"><span class="num">A</span><span class="bar"></span><span class="den">n</span></span>　分母の − は分数全体の前に出します。</p></div>
+  </div>
+  <div class="mt-divider"><span>🖊 練習問題</span></div>
+  <div class="card">
+    <div class="clabel mt">練習 3-①</div>
+    <div class="q-text">−2x = 6y − 3 &nbsp;を (x) について解きなさい。</div>
+    <div class="choices" id="ch-s3q1">
+      <button class="ch" onclick="ans('s3q1',0,2)"><span class="cnum">1</span>x = <span class="frac"><span class="num">6y − 3</span><span class="bar"></span><span class="den">2</span></span></button>
+      <button class="ch" onclick="ans('s3q1',1,2)"><span class="cnum">2</span>x = <span class="frac"><span class="num">6y + 3</span><span class="bar"></span><span class="den">2</span></span></button>
+      <button class="ch" onclick="ans('s3q1',2,2)"><span class="cnum">3</span>x = −<span class="frac"><span class="num">6y − 3</span><span class="bar"></span><span class="den">2</span></span></button>
+      <button class="ch" onclick="ans('s3q1',3,2)"><span class="cnum">4</span>x = −<span class="frac"><span class="num">6y + 3</span><span class="bar"></span><span class="den">2</span></span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s3q1"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">分母の − を前に出せました</span></span></div>
+    <div class="fb-ng" id="fb-ng-s3q1"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s3q1')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s3q1">
+      <div class="exp-box"><h4>解説</h4><p>÷(−2) → <span class="frac"><span class="num">6y − 3</span><span class="bar"></span><span class="den">−2</span></span>　← 分母の − を前に
+<strong>x = −<span class="frac"><span class="num">6y − 3</span><span class="bar"></span><span class="den">2</span></span></strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① − を前に出すのを忘れています。
+② 分子の −3 が +3 になっています。右辺は変形しません。
+④ − は正しいですが，分子の −3 まで +3 にしています。</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel mt">練習 3-②</div>
+    <div class="q-text">−5x = 3y + 4 &nbsp;を (x) について解きなさい。</div>
+    <div class="choices" id="ch-s3q2">
+      <button class="ch" onclick="ans('s3q2',0,2)"><span class="cnum">1</span>x = <span class="frac"><span class="num">3y + 4</span><span class="bar"></span><span class="den">5</span></span></button>
+      <button class="ch" onclick="ans('s3q2',1,2)"><span class="cnum">2</span>x = −<span class="frac"><span class="num">3y − 4</span><span class="bar"></span><span class="den">5</span></span></button>
+      <button class="ch" onclick="ans('s3q2',2,2)"><span class="cnum">3</span>x = −<span class="frac"><span class="num">3y + 4</span><span class="bar"></span><span class="den">5</span></span></button>
+      <button class="ch" onclick="ans('s3q2',3,2)"><span class="cnum">4</span>x = <span class="frac"><span class="num">3y − 4</span><span class="bar"></span><span class="den">5</span></span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s3q2"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">マイナス係数の処理が完璧です</span></span></div>
+    <div class="fb-ng" id="fb-ng-s3q2"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s3q2')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s3q2">
+      <div class="exp-box"><h4>解説</h4><p>÷(−5) → 分母の − を前に
+<strong>x = −<span class="frac"><span class="num">3y + 4</span><span class="bar"></span><span class="den">5</span></span></strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① − を前に出すのを忘れています。
+② − は正しいですが，+4 を −4 にしています。右辺は変形しません。
+④ − がなく，+4 まで −4 になっています。</p></div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn-next" onclick="goTab('s4')">STEP 4 へ進む →</button>
+    <button class="btn-index" onclick="goIndex()">📋 単元表に戻る</button>
+  </div>
+</div>
+
+<!-- ===== STEP 4 ===== -->
+<div class="page" id="page-s4">
+  <div class="page-hdr">
+    <div class="page-hdr-icon">S4</div>
+    <div>
+      <div class="page-hdr-title">STEP 4 ─ ax + by + c = 0 型</div>
+      <div class="page-hdr-desc">両辺に −1 をかけるワザ</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel-row">
+      <div class="clabel ex">例題 4</div>
+      <button class="speak-btn" id="speak-s4" onclick="toggleSpeak('s4')" aria-label="音声で解説を聞く">🔊 解説を聞く</button>
+    </div>
+    <div id="script-s4" style="display:none">STEP4は、ax＋by＋c＝0の形から、yについて解くパターンです。例えば、3x－2y＋7＝0をyについて解くには、まずyだけを左辺に残します。3xと7を右辺に移項すると、マイナス2y＝マイナス3x－7になります。次に、両辺にマイナス1をかけると全ての符号が逆になり、2y＝3x＋7になります。最後に2で割ると、y＝3x＋7分の2です。</div>
+    <div class="q-text">3x − 2y + 7 = 0 &nbsp;を (y) について解きなさい。</div>
+    <div class="exp-box"><h4>STEP 1　y 以外を移項する</h4><p>y だけを左辺に残します。3x と 7 を右辺に移項。
+−2y = −3x − 7</p></div>
+    <div class="exp-box blue"><h4>STEP 2　両辺に −1 をかける</h4><p>−2y のまま割ると複雑なので，<strong>×(−1) で全符号を反転</strong>します。
+−2y = −3x − 7 → ×(−1) → 2y = 3x + 7</p></div>
+    <div class="exp-box amber"><h4>STEP 3　÷2 で完成</h4><p><strong>y = <span class="frac"><span class="num">3x + 7</span><span class="bar"></span><span class="den">2</span></span></strong></p></div>
+  </div>
+  <div class="mt-divider"><span>🖊 練習問題</span></div>
+  <div class="card">
+    <div class="clabel mt">練習 4-①<span class="prob-src">〈千葉県〉</span></div>
+    <div class="q-text">3x − 2y = 8 &nbsp;を (y) について解きなさい。</div>
+    <div class="choices" id="ch-s4q1">
+      <button class="ch" onclick="ans('s4q1',0,1)"><span class="cnum">1</span>y = <span class="frac"><span class="num">3x + 8</span><span class="bar"></span><span class="den">2</span></span></button>
+      <button class="ch" onclick="ans('s4q1',1,1)"><span class="cnum">2</span>y = <span class="frac"><span class="num">3x − 8</span><span class="bar"></span><span class="den">2</span></span></button>
+      <button class="ch" onclick="ans('s4q1',2,1)"><span class="cnum">3</span>y = <span class="frac"><span class="num">−3x + 8</span><span class="bar"></span><span class="den">2</span></span></button>
+      <button class="ch" onclick="ans('s4q1',3,1)"><span class="cnum">4</span>y = 3x − 8</button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s4q1"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">符号処理が完璧です</span></span></div>
+    <div class="fb-ng" id="fb-ng-s4q1"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s4q1')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s4q1">
+      <div class="exp-box"><h4>解説</h4><p>① 3x を移項：−2y = −3x + 8
+② ×(−1)：2y = 3x − 8
+③ ÷2：<strong>y = <span class="frac"><span class="num">3x − 8</span><span class="bar"></span><span class="den">2</span></span></strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① 8 は移項後 −8 になります（+8 のままは誤り）。
+③ ×(−1) 後は 3x（プラス）になります。
+④ ÷2 を忘れています。</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel mt">練習 4-②<span class="prob-src">〈福島県〉</span></div>
+    <div class="q-text">5x + 3y − 6 = 0 &nbsp;を (y) について解きなさい。</div>
+    <div class="choices" id="ch-s4q2">
+      <button class="ch" onclick="ans('s4q2',0,3)"><span class="cnum">1</span>y = <span class="frac"><span class="num">5x − 6</span><span class="bar"></span><span class="den">3</span></span></button>
+      <button class="ch" onclick="ans('s4q2',1,3)"><span class="cnum">2</span>y = <span class="frac"><span class="num">5x + 6</span><span class="bar"></span><span class="den">3</span></span></button>
+      <button class="ch" onclick="ans('s4q2',2,3)"><span class="cnum">3</span>y = <span class="frac"><span class="num">−5x − 6</span><span class="bar"></span><span class="den">3</span></span></button>
+      <button class="ch" onclick="ans('s4q2',3,3)"><span class="cnum">4</span>y = <span class="frac"><span class="num">−5x + 6</span><span class="bar"></span><span class="den">3</span></span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s4q2"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">入試問題をクリア！</span></span></div>
+    <div class="fb-ng" id="fb-ng-s4q2"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s4q2')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s4q2">
+      <div class="exp-box"><h4>解説</h4><p>5x → −5x，−6 → +6 と移項 → 3y = −5x + 6
+÷3：<strong>y = <span class="frac"><span class="num">−5x + 6</span><span class="bar"></span><span class="den">3</span></span></strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① 5x が +5x のまま，かつ −6 が −6 のままです。
+② 5x が +5x のままです。移項すると −5x になります。
+③ −6 が −6 のままです。移項すると +6 になります。</p></div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn-next" onclick="goTab('s5')">STEP 5 へ進む →</button>
+    <button class="btn-index" onclick="goIndex()">📋 単元表に戻る</button>
+  </div>
+</div>
+
+<!-- ===== STEP 5 ===== -->
+<div class="page" id="page-s5">
+  <div class="page-hdr">
+    <div class="page-hdr-icon">S5</div>
+    <div>
+      <div class="page-hdr-title">STEP 5 ─ π（パイ）を含む係数</div>
+      <div class="page-hdr-desc">π も数と同じ扱い！</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel-row">
+      <div class="clabel ex">例題 5</div>
+      <button class="speak-btn" id="speak-s5" onclick="toggleSpeak('s5')" aria-label="音声で解説を聞く">🔊 解説を聞く</button>
+    </div>
+    <div id="script-s5" style="display:none">STEP5は、パイを含む係数のパターンです。パイは円周率の記号で、普通の数と同じように掛け算・割り算できます。例えば、ℓ＝2πr＋5をrについて解くには、まず両辺を入れ替えます。天秤の左右を入れ替えても変わらないのと同じで、符号は変えなくてよいです。5を移項すると2πr＝ℓ－5になり、両辺を2πで割ると、r＝ℓ－5分の2π です。</div>
+    <div class="q-text">ℓ = 2πr + 5 &nbsp;を (r) について解きなさい。</div>
+    <div class="exp-box"><h4>まず　─　両辺を入れ替える</h4><p>r について解くので，<strong>r のある辺を左側に</strong>します。
+⚖️ 天秤の左右を入れ替えても等式は変わりません。符号は変えなくてよいです。
+ℓ = 2πr + 5 → <strong>2πr + 5 = ℓ</strong></p></div>
+    <div class="exp-box blue"><h4>STEP 1　移項してから ÷2π</h4><p>5 を移項（→−5）：2πr = ℓ − 5
+÷2π：<strong>r = <span class="frac"><span class="num">ℓ − 5</span><span class="bar"></span><span class="den">2π</span></span></strong>　← 2π が約分されます</p></div>
+    <div class="exp-box amber"><h4>⭐ ポイント</h4><p>2πr の係数は「2π」（2 と π の積）。
+2πr ÷ 2π = r で約分されます。</p></div>
+  </div>
+  <div class="mt-divider"><span>🖊 練習問題</span></div>
+  <div class="card">
+    <div class="clabel mt">練習 5-①</div>
+    <div class="q-text">S = 2πar + 3b &nbsp;を (a) について解きなさい。</div>
+    <div class="choices" id="ch-s5q1">
+      <button class="ch" onclick="ans('s5q1',0,1)"><span class="cnum">1</span>a = <span class="frac"><span class="num">S − 3b</span><span class="bar"></span><span class="den">2π</span></span></button>
+      <button class="ch" onclick="ans('s5q1',1,1)"><span class="cnum">2</span>a = <span class="frac"><span class="num">S − 3b</span><span class="bar"></span><span class="den">2πr</span></span></button>
+      <button class="ch" onclick="ans('s5q1',2,1)"><span class="cnum">3</span>a = <span class="frac"><span class="num">S + 3b</span><span class="bar"></span><span class="den">2πr</span></span></button>
+      <button class="ch" onclick="ans('s5q1',3,1)"><span class="cnum">4</span>a = <span class="frac"><span class="num">S − 3b</span><span class="bar"></span><span class="den">πr</span></span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s5q1"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">分母に r も含めるのがポイントです</span></span></div>
+    <div class="fb-ng" id="fb-ng-s5q1"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s5q1')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s5q1">
+      <div class="exp-box"><h4>解説</h4><p>3b を移項（→−3b）→ a の係数は <strong>2πr</strong> → ÷2πr
+<strong>a = <span class="frac"><span class="num">S − 3b</span><span class="bar"></span><span class="den">2πr</span></span></strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① 分母が 2π だけで r が抜けています。
+③ 3b が +3b のままです。移項すると −3b になります。
+④ 分母が πr で 2 が抜けています。</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel mt">練習 5-②<span class="prob-src">〈鳥取県〉</span></div>
+    <div class="q-text">ℓ = 2πr + πa &nbsp;を (r) について解きなさい。</div>
+    <div class="choices" id="ch-s5q2">
+      <button class="ch" onclick="ans('s5q2',0,3)"><span class="cnum">1</span>r = <span class="frac"><span class="num">ℓ + πa</span><span class="bar"></span><span class="den">2π</span></span></button>
+      <button class="ch" onclick="ans('s5q2',1,3)"><span class="cnum">2</span>r = <span class="frac"><span class="num">ℓ − a</span><span class="bar"></span><span class="den">2π</span></span></button>
+      <button class="ch" onclick="ans('s5q2',2,3)"><span class="cnum">3</span>r = <span class="frac"><span class="num">ℓ − πa</span><span class="bar"></span><span class="den">π</span></span></button>
+      <button class="ch" onclick="ans('s5q2',3,3)"><span class="cnum">4</span>r = <span class="frac"><span class="num">ℓ − πa</span><span class="bar"></span><span class="den">2π</span></span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s5q2"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">π を含む係数の処理が完璧です</span></span></div>
+    <div class="fb-ng" id="fb-ng-s5q2"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s5q2')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s5q2">
+      <div class="exp-box"><h4>解説</h4><p>πa を移項（→−πa）→ 2πr = ℓ − πa → ÷2π
+<strong>r = <span class="frac"><span class="num">ℓ − πa</span><span class="bar"></span><span class="den">2π</span></span></strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① πa が +πa のままです。移項すると −πa になります。
+② 分子が ℓ − a で π が消えています。πa はひとつのかたまりです。
+③ 分母が π だけで 2 が抜けています。</p></div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn-next" onclick="goTab('s6')">STEP 6 へ進む →</button>
+    <button class="btn-index" onclick="goIndex()">📋 単元表に戻る</button>
+  </div>
+</div>
+
+<!-- ===== STEP 6 ===== -->
+<div class="page" id="page-s6">
+  <div class="page-hdr">
+    <div class="page-hdr-icon">S6</div>
+    <div>
+      <div class="page-hdr-title">STEP 6 ─ 係数に <span class="frac" style="font-size:.85em;"><span class="num">1</span><span class="bar"></span><span class="den">2</span></span> → まず両辺に掛ける</div>
+      <div class="page-hdr-desc">分数を消してから割る 2 ステップ</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel-row">
+      <div class="clabel ex">例題 6</div>
+      <button class="speak-btn" id="speak-s6" onclick="toggleSpeak('s6')" aria-label="音声で解説を聞く">🔊 解説を聞く</button>
+    </div>
+    <div id="script-s6" style="display:none">STEP6は、係数に2分の1などの分数があるパターンです。例えば、S＝2分の1・ah をhについて解くには、まず両辺に2をかけて分数を消します。すると ah＝2S になります。次にaで割ると、h＝2S分のa です。手順は、①分母の数を両辺にかけて分数を消す、②残った係数で割る、この順番が大切です。</div>
+    <div class="q-text">S = <span class="frac"><span class="num">1</span><span class="bar"></span><span class="den">2</span></span>ah &nbsp;を h について解きなさい。</div>
+    <div class="exp-box"><h4>STEP 1　×2 で分数を消す</h4><p>両辺 × 2：<span class="frac"><span class="num">1</span><span class="bar"></span><span class="den">2</span></span>ah × 2 = S × 2 → <strong>ah = 2S</strong></p></div>
+    <div class="exp-box blue"><h4>STEP 2　÷a で完成</h4><p><strong>h = <span class="frac"><span class="num">2S</span><span class="bar"></span><span class="den">a</span></span></strong></p></div>
+    <div class="exp-box amber"><h4>⭐ ポイント</h4><p>① 分母の数を両辺にかけて分数を消す
+② 残った係数で割る　この順番を守りましょう。</p></div>
+  </div>
+  <div class="mt-divider"><span>🖊 練習問題</span></div>
+  <div class="card">
+    <div class="clabel mt">練習 6-①</div>
+    <div class="q-text">V = <span class="frac"><span class="num">1</span><span class="bar"></span><span class="den">3</span></span>Sh &nbsp;を h について解きなさい。</div>
+    <div class="choices" id="ch-s6q1">
+      <button class="ch" onclick="ans('s6q1',0,2)"><span class="cnum">1</span>h = <span class="frac"><span class="num">V</span><span class="bar"></span><span class="den">3S</span></span></button>
+      <button class="ch" onclick="ans('s6q1',1,2)"><span class="cnum">2</span>h = <span class="frac"><span class="num">S</span><span class="bar"></span><span class="den">3V</span></span></button>
+      <button class="ch" onclick="ans('s6q1',2,2)"><span class="cnum">3</span>h = <span class="frac"><span class="num">3V</span><span class="bar"></span><span class="den">S</span></span></button>
+      <button class="ch" onclick="ans('s6q1',3,2)"><span class="cnum">4</span>h = <span class="frac"><span class="num">V</span><span class="bar"></span><span class="den">S</span></span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s6q1"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">×3 してから ÷S の手順が完璧です</span></span></div>
+    <div class="fb-ng" id="fb-ng-s6q1"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s6q1')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s6q1">
+      <div class="exp-box"><h4>解説</h4><p>×3 → Sh = 3V　÷S → <strong>h = <span class="frac"><span class="num">3V</span><span class="bar"></span><span class="den">S</span></span></strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① ×3 を忘れています。先に分数を消してから ÷S の順番が必要です。
+② V と S が逆になっています。
+④ ×3 したのに V のままです。両辺 ×3 なので V も 3V になります。</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel mt">練習 6-②</div>
+    <div class="q-text">S = <span class="frac"><span class="num">1</span><span class="bar"></span><span class="den">2</span></span>πℓr &nbsp;を r について解きなさい。</div>
+    <div class="choices" id="ch-s6q2">
+      <button class="ch" onclick="ans('s6q2',0,0)"><span class="cnum">1</span>r = <span class="frac"><span class="num">2S</span><span class="bar"></span><span class="den">πℓ</span></span></button>
+      <button class="ch" onclick="ans('s6q2',1,0)"><span class="cnum">2</span>r = <span class="frac"><span class="num">S</span><span class="bar"></span><span class="den">2πℓ</span></span></button>
+      <button class="ch" onclick="ans('s6q2',2,0)"><span class="cnum">3</span>r = <span class="frac"><span class="num">2S</span><span class="bar"></span><span class="den">ℓ</span></span></button>
+      <button class="ch" onclick="ans('s6q2',3,0)"><span class="cnum">4</span>r = <span class="frac"><span class="num">πℓ</span><span class="bar"></span><span class="den">2S</span></span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s6q2"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">分数係数の処理が完璧です</span></span></div>
+    <div class="fb-ng" id="fb-ng-s6q2"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s6q2')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s6q2">
+      <div class="exp-box"><h4>解説</h4><p>×2 → πℓr = 2S　÷πℓ → <strong>r = <span class="frac"><span class="num">2S</span><span class="bar"></span><span class="den">πℓ</span></span></strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">② ×2 を忘れています。分子は 2S になります。
+③ 分母の π が抜けています。÷πℓ なので分母は πℓ 全体です。
+④ 分子と分母が逆になっています。</p></div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn-next" onclick="goTab('s7')">STEP 7 へ進む →</button>
+    <button class="btn-index" onclick="goIndex()">📋 単元表に戻る</button>
+  </div>
+</div>
+
+<!-- ===== STEP 7 ===== -->
+<div class="page" id="page-s7">
+  <div class="page-hdr">
+    <div class="page-hdr-icon">S7</div>
+    <div>
+      <div class="page-hdr-title">STEP 7 ─ 右辺が分数式 a = (b+c)/n 型</div>
+      <div class="page-hdr-desc">分母を両辺にかけて消す</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel-row">
+      <div class="clabel ex">例題 7</div>
+      <button class="speak-btn" id="speak-s7" onclick="toggleSpeak('s7')" aria-label="音声で解説を聞く">🔊 解説を聞く</button>
+    </div>
+    <div id="script-s7" style="display:none">STEP7は、右辺が分数式のパターンです。例えば、a＝b＋c分の3 をbについて解くには、まず両辺に3をかけて分母を消します。すると3a＝b＋cになります。次にcを移項すると、b＝3a－c です。分数が左辺にあっても右辺にあっても、分母を両辺にかけて消す手順は同じです。</div>
+    <div class="q-text">a = <span class="frac"><span class="num">b + c</span><span class="bar"></span><span class="den">3</span></span> &nbsp;を b について解きなさい。</div>
+    <div class="exp-box"><h4>STEP 1　×3 で分母を消す</h4><p>両辺に 3 をかけると分母が消えます。
+3a = b + c　→　b + c = 3a</p></div>
+    <div class="exp-box blue"><h4>STEP 2　c を移項</h4><p>c を移項（+c → −c）：<strong>b = 3a − c</strong></p></div>
+    <div class="exp-box amber"><h4>⭐ ポイント</h4><p>分数が左辺・右辺どちらにあっても，「分母を両辺にかけて消す」手順は同じです。</p></div>
+  </div>
+  <div class="mt-divider"><span>🖊 練習問題</span></div>
+  <div class="card">
+    <div class="clabel mt">練習 7-①</div>
+    <div class="q-text">c = <span class="frac"><span class="num">2a + b</span><span class="bar"></span><span class="den">3</span></span> &nbsp;を a について解きなさい。</div>
+    <div class="choices" id="ch-s7q1">
+      <button class="ch" onclick="ans('s7q1',0,2)"><span class="cnum">1</span>a = 3c − b</button>
+      <button class="ch" onclick="ans('s7q1',1,2)"><span class="cnum">2</span>a = <span class="frac"><span class="num">3c + b</span><span class="bar"></span><span class="den">2</span></span></button>
+      <button class="ch" onclick="ans('s7q1',2,2)"><span class="cnum">3</span>a = <span class="frac"><span class="num">3c − b</span><span class="bar"></span><span class="den">2</span></span></button>
+      <button class="ch" onclick="ans('s7q1',3,2)"><span class="cnum">4</span>a = <span class="frac"><span class="num">c − b</span><span class="bar"></span><span class="den">2</span></span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s7q1"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">2ステップ処理が完璧です</span></span></div>
+    <div class="fb-ng" id="fb-ng-s7q1"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s7q1')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s7q1">
+      <div class="exp-box"><h4>解説</h4><p>×3 → 3c = 2a + b　b を移項 → 2a = 3c − b　÷2
+<strong>a = <span class="frac"><span class="num">3c − b</span><span class="bar"></span><span class="den">2</span></span></strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① ÷2 を忘れています。
+② b の符号が変わっていません。+b を移項すると −b になります。
+④ ×3 で 3c になるのに c のままです。</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel mt">練習 7-②</div>
+    <div class="q-text">m = <span class="frac"><span class="num">a + b</span><span class="bar"></span><span class="den">2</span></span> &nbsp;を b について解きなさい。</div>
+    <div class="choices" id="ch-s7q2">
+      <button class="ch" onclick="ans('s7q2',0,1)"><span class="cnum">1</span>b = 2m + a</button>
+      <button class="ch" onclick="ans('s7q2',1,1)"><span class="cnum">2</span>b = 2m − a</button>
+      <button class="ch" onclick="ans('s7q2',2,1)"><span class="cnum">3</span>b = m − a</button>
+      <button class="ch" onclick="ans('s7q2',3,1)"><span class="cnum">4</span>b = <span class="frac"><span class="num">m − a</span><span class="bar"></span><span class="den">2</span></span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s7q2"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">右辺の分数の処理が完璧です</span></span></div>
+    <div class="fb-ng" id="fb-ng-s7q2"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s7q2')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s7q2">
+      <div class="exp-box"><h4>解説</h4><p>×2 → a + b = 2m　a を移項（→−a）：<strong>b = 2m − a</strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① +a を移項すると −a になるのに符号が変わっていません。
+③ ×2 を忘れています。右辺は 2m になります。
+④ ×2 で分母は消えているのに，さらに ÷2 しています。</p></div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn-next" onclick="goTab('s8')">STEP 8 へ進む →</button>
+    <button class="btn-index" onclick="goIndex()">📋 単元表に戻る</button>
+  </div>
+</div>
+
+<!-- ===== STEP 8 ===== -->
+<div class="page" id="page-s8">
+  <div class="page-hdr">
+    <div class="page-hdr-icon">S8</div>
+    <div>
+      <div class="page-hdr-title">STEP 8 ─ 括弧を含む式</div>
+      <div class="page-hdr-desc">S = <span class="frac" style="font-size:.85em;"><span class="num">1</span><span class="bar"></span><span class="den">2</span></span>(a+b)h 型　3ステップで攻略！</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel-row">
+      <div class="clabel ex">例題 8</div>
+      <button class="speak-btn" id="speak-s8" onclick="toggleSpeak('s8')" aria-label="音声で解説を聞く">🔊 解説を聞く</button>
+    </div>
+    <div id="script-s8" style="display:none">STEP8は、括弧を含む式のパターンです。例えば、s＝2分の1・(a＋b)h をaについて解くには、3ステップで解きます。まず両辺に2をかけて分数を消します。(a＋b)h＝2sになります。次に、括弧の外のhで割ります。a＋b＝2s分のh になります。最後にbを移項すると、a＝2s分のh－b です。</div>
+    <div class="q-text">s = <span class="frac"><span class="num">1</span><span class="bar"></span><span class="den">2</span></span>(a + b)h &nbsp;を a について解きなさい。</div>
+    <div class="exp-box"><h4>STEP 1　×2 で分数を消す</h4><p>両辺 × 2 → <strong>(a + b)h = 2s</strong></p></div>
+    <div class="exp-box blue"><h4>STEP 2　÷h で括弧を外す</h4><p>h は括弧の外にあります。÷h で括弧が外れます。
+<strong>a + b = <span class="frac"><span class="num">2s</span><span class="bar"></span><span class="den">h</span></span></strong></p></div>
+    <div class="exp-box"><h4>STEP 3　b を移項</h4><p>+b → −b：<strong>a = <span class="frac"><span class="num">2s</span><span class="bar"></span><span class="den">h</span></span> − b</strong></p></div>
+    <div class="exp-box amber"><h4>⭐ 手順</h4><p>① 分数を消す（×n）　② 括弧の外の文字で割る　③ 移項</p></div>
+  </div>
+  <div class="mt-divider"><span>🖊 練習問題</span></div>
+  <div class="card">
+    <div class="clabel mt">練習 8-①</div>
+    <div class="q-text">v = <span class="frac"><span class="num">1</span><span class="bar"></span><span class="den">3</span></span>(a + 2b)h &nbsp;を a について解きなさい。</div>
+    <div class="choices" id="ch-s8q1">
+      <button class="ch" onclick="ans('s8q1',0,3)"><span class="cnum">1</span>a = <span class="frac"><span class="num">3v</span><span class="bar"></span><span class="den">h</span></span> + 2b</button>
+      <button class="ch" onclick="ans('s8q1',1,3)"><span class="cnum">2</span>a = <span class="frac"><span class="num">v</span><span class="bar"></span><span class="den">h</span></span> − 2b</button>
+      <button class="ch" onclick="ans('s8q1',2,3)"><span class="cnum">3</span>a = <span class="frac"><span class="num">3v − 2b</span><span class="bar"></span><span class="den">h</span></span></button>
+      <button class="ch" onclick="ans('s8q1',3,3)"><span class="cnum">4</span>a = <span class="frac"><span class="num">3v</span><span class="bar"></span><span class="den">h</span></span> − 2b</button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s8q1"><span class="fb-icon">⭕</span><span class="fb-text">正解！<span class="fb-sub">3ステップを正確に処理できました</span></span></div>
+    <div class="fb-ng" id="fb-ng-s8q1"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s8q1')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s8q1">
+      <div class="exp-box"><h4>解説</h4><p>×3 → (a+2b)h = 3v　÷h → a+2b = <span class="frac"><span class="num">3v</span><span class="bar"></span><span class="den">h</span></span>　2b を移項
+<strong>a = <span class="frac"><span class="num">3v</span><span class="bar"></span><span class="den">h</span></span> − 2b</strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① 2b の符号が変わっていません。移項すると −2b になります。
+② ×3 を忘れています。右辺は 3v になります。
+③ −2b まで分数に入れています。−2b は ÷h していないので分母に h はつきません。</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="clabel mt">練習 8-②</div>
+    <div class="q-text">S = <span class="frac"><span class="num">1</span><span class="bar"></span><span class="den">2</span></span>(a + b + c)r &nbsp;を a について解きなさい。</div>
+    <div class="choices" id="ch-s8q2">
+      <button class="ch" onclick="ans('s8q2',0,2)"><span class="cnum">1</span>a = <span class="frac"><span class="num">2S</span><span class="bar"></span><span class="den">r</span></span> + b + c</button>
+      <button class="ch" onclick="ans('s8q2',1,2)"><span class="cnum">2</span>a = <span class="frac"><span class="num">S</span><span class="bar"></span><span class="den">r</span></span> − b − c</button>
+      <button class="ch" onclick="ans('s8q2',2,2)"><span class="cnum">3</span>a = <span class="frac"><span class="num">2S</span><span class="bar"></span><span class="den">r</span></span> − b − c</button>
+      <button class="ch" onclick="ans('s8q2',3,2)"><span class="cnum">4</span>a = <span class="frac"><span class="num">2S − b − c</span><span class="bar"></span><span class="den">r</span></span></button>
+    </div>
+    <div class="fb-ok" id="fb-ok-s8q2"><span class="fb-icon">⭕</span><span class="fb-text">STEP 8 クリア！🏆<span class="fb-sub">全 STEP 完全マスター！おめでとうございます！</span></span></div>
+    <div class="fb-ng" id="fb-ng-s8q2"><span class="fb-icon">❌</span><span class="fb-text">不正解です<span class="fb-sub">下の解説で確認しましょう</span></span><button class="reset-btn" onclick="resetQ('s8q2')">🔄 もう一度</button></div>
+    <div class="exp-area" id="exp-s8q2">
+      <div class="exp-box"><h4>解説</h4><p>×2 → (a+b+c)r = 2S　÷r → a+b+c = <span class="frac"><span class="num">2S</span><span class="bar"></span><span class="den">r</span></span>　b,c を移項
+<strong>a = <span class="frac"><span class="num">2S</span><span class="bar"></span><span class="den">r</span></span> − b − c</strong></p></div>
+      <div class="exp-box amber"><h4>誤答の確認</h4><p style="font-size:13px;color:var(--text2);">① b,c の符号が変わっていません。移項すると −b，−c になります。
+② ×2 を忘れています。右辺は 2S になります。
+④ −b，−c まで分数に入れています。÷r していないので分母に r はつきません。</p></div>
+    </div>
+  </div>
+  <!-- 完了バナー -->
+  <div id="complete-banner" style="display:none;margin-top:1.4rem;">
+    <div class="complete-banner">
+      <div class="ci">🏆</div>
+      <div class="ct">全 STEP 完全マスター！おめでとうございます！</div>
+      <div class="cs">文字式について解く　STEP 1〜8 修了</div>
+    </div>
+  </div>
+  <div class="nav-row" style="margin-top:1.4rem;">
+    <button class="btn-next" style="background:var(--blue);" onclick="goNext()">🎓 次の単元へ進む →</button>
+    <button class="btn-index" onclick="goIndex()">📋 単元表に戻る</button>
+  </div>
+</div>
+
+</main>
+
+<script>
+// リンク先（実際のURLに変更してください）
+const NAV_INDEX = 'MA_proof_index.html';
+const NAV_NEXT  = 'next_unit.html';
+function goIndex(){ window.location.href = NAV_INDEX; }
+function goNext(){  window.location.href = NAV_NEXT; }
+
+// タブ切替
+const STEPS = ['s1','s2','s3','s4','s5','s6','s7','s8'];
+function goTab(id) {
+  STEPS.forEach(s => {
+    document.getElementById('page-'+s).classList.remove('active');
+    document.getElementById('tab-'+s).classList.remove('active');
+  });
+  document.getElementById('page-'+id).classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  // タブを中央に
+  const nav = document.getElementById('tabNav');
+  const btn = document.getElementById('tab-'+id);
+  nav.scrollLeft = btn.offsetLeft - nav.offsetWidth/2 + btn.offsetWidth/2;
+}
+
+// 答え合わせ
+const done = {};
+let totalCorrect = 0;
+const TOTAL = 16;
+
+function ans(qid, idx, correct) {
+  if (done[qid]) return;
+  done[qid] = true;
+  const isOk = (idx === correct);
+  document.querySelectorAll('#ch-'+qid+' .ch').forEach((b,i) => {
+    b.disabled = true;
+    if (i===correct && !isOk) b.className='ch reveal';
+    else if (i===idx && !isOk) b.className='ch ng';
+    else if (i===correct)      b.className='ch ok';
+  });
+  const fbOk = document.getElementById('fb-ok-'+qid);
+  const fbNg = document.getElementById('fb-ng-'+qid);
+  if (isOk) {
+    fbOk.style.display = 'flex';
+    _confetti();
+    totalCorrect++;
+    // タブに完了マーク
+    const step = qid.slice(0,2); // 's1','s2'...
+    const q2id = step + 'q2';
+    if (done[q2id] && !document.getElementById('pip-'+step).classList.contains('done')) {
+      document.getElementById('pip-'+step).classList.add('done');
+      document.getElementById('pip-'+step).textContent = '✓';
+    }
+    // S8の最後でバナー表示
+    if (qid === 's8q2') {
+      setTimeout(()=>{
+        const b = document.getElementById('complete-banner');
+        b.style.display='block';
+        b.scrollIntoView({behavior:'smooth',block:'nearest'});
+        _confetti();
+      },600);
+    }
+  } else {
+    fbNg.style.display = 'flex';
+  }
+  // 解説表示
+  const exp = document.getElementById('exp-'+qid);
+  if (exp) setTimeout(()=>{
+    exp.style.display='block';
+    exp.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },350);
+}
+
+function resetQ(qid) {
+  delete done[qid];
+  document.getElementById('fb-ok-'+qid).style.display='none';
+  document.getElementById('fb-ng-'+qid).style.display='none';
+  const exp = document.getElementById('exp-'+qid);
+  if (exp) exp.style.display='none';
+  document.querySelectorAll('#ch-'+qid+' .ch').forEach(b=>{
+    b.disabled=false; b.className='ch';
+  });
+}
+
+// 花吹雪
+function _confetti() {
+  let cv = document.getElementById('_gcf');
+  if (!cv) {
+    cv = document.createElement('canvas');
+    cv.id = '_gcf';
+    cv.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+    document.body.appendChild(cv);
+  }
+  const ctx = cv.getContext('2d');
+  cv.width = window.innerWidth; cv.height = window.innerHeight;
+  const pts = [];
+  let run = true;
+  for (let i=0;i<180;i++) pts.push({
+    x:Math.random()*cv.width, y:-Math.random()*cv.height*.5,
+    s:Math.random()*8+4, c:'hsl('+Math.floor(Math.random()*360)+',80%,60%)',
+    sp:Math.random()*4+2, r:Math.random()*Math.PI*2, rv:(Math.random()-.5)*.15
+  });
+  (function step(){
+    if(!run)return;
+    requestAnimationFrame(step);
+    ctx.clearRect(0,0,cv.width,cv.height);
+    pts.forEach(p=>{
+      p.y+=p.sp; p.r+=p.rv;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+      ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);
+      ctx.restore();
+    });
+  })();
+  setTimeout(()=>{run=false;ctx.clearRect(0,0,cv.width,cv.height);},3000);
+}
+
+/* ===== 音声読み上げ ===== */
+let currentUtterance = null;
+let currentStep = null;
+
+function toggleSpeak(step) {
+  const btn = document.getElementById('speak-' + step);
+  const scriptEl = document.getElementById('script-' + step);
+  const text = scriptEl ? scriptEl.textContent : '';
+
+  // 同じボタンを再度押したら停止
+  if (currentStep === step && window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    btn.classList.remove('speaking');
+    btn.textContent = '🔊 解説を聞く';
+    currentStep = null;
+    return;
+  }
+
+  // 他のボタンが話していたら停止
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    if (currentStep) {
+      const prevBtn = document.getElementById('speak-' + currentStep);
+      if (prevBtn) { prevBtn.classList.remove('speaking'); prevBtn.textContent = '🔊 解説を聞く'; }
+    }
+  }
+
+  // 読み上げ開始
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'ja-JP';
+  utter.rate = 0.9;   // 少しゆっくり
+  utter.pitch = 1.0;
+  currentUtterance = utter;
+  currentStep = step;
+
+  btn.classList.add('speaking');
+  btn.textContent = '⏹ 停止';
+
+  utter.onend = () => {
+    btn.classList.remove('speaking');
+    btn.textContent = '🔊 解説を聞く';
+    currentStep = null;
+  };
+  utter.onerror = () => {
+    btn.classList.remove('speaking');
+    btn.textContent = '🔊 解説を聞く';
+    currentStep = null;
+  };
+
+  window.speechSynthesis.speak(utter);
+}
+
+// タブ切替時に音声を停止
+const _origGoTab = goTab;
+goTab = function(id) {
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    if (currentStep) {
+      const prevBtn = document.getElementById('speak-' + currentStep);
+      if (prevBtn) { prevBtn.classList.remove('speaking'); prevBtn.textContent = '🔊 解説を聞く'; }
+      currentStep = null;
+    }
+  }
+  _origGoTab(id);
+};
+
+</script>
+</body>
+</html>
