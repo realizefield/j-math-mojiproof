@@ -539,10 +539,10 @@ a + b + c が 9 の倍数ならば，全体も 9 の倍数になります。<br>
     <button class="hint-toggle" onclick="toggleHint('h-p5')">💡 ヒントを見る</button>
     <div class="hint-box" id="h-p5">100p + 10q + r = 99p + 9q + (p+q+r) = 3(33p+3q) + (p+q+r)</div>
     <div class="choices" id="ch-p5">
-      <button class="ch" onclick="ansP('p5',0,1)"><span class="cnum">1</span><span>100p+10q+r<br>= 99p+9q+(p+q+r)<br>= 3(33p+3q)+(p+q+r)</span></button>
-      <button class="ch" onclick="ansP('p5',1,1)"><span class="cnum">2</span><span>100p+10q+r<br>= 99p+9q+(p+q+r)<br>（くくらずに終わり）</span></button>
-      <button class="ch" onclick="ansP('p5',2,1)"><span class="cnum">3</span><span>100p+10q+r<br>= 9(11p+q)+(p+q+r)</span></button>
-      <button class="ch" onclick="ansP('p5',3,1)"><span class="cnum">4</span><span>100p+10q+r<br>= 3(100p+10q+r)</span></button>
+      <button class="ch" onclick="ansP('p5',0,0)"><span class="cnum">1</span><span>100p+10q+r<br>= 99p+9q+(p+q+r)<br>= 3(33p+3q)+(p+q+r)</span></button>
+      <button class="ch" onclick="ansP('p5',1,0)"><span class="cnum">2</span><span>100p+10q+r<br>= 99p+9q+(p+q+r)<br>（くくらずに終わり）</span></button>
+      <button class="ch" onclick="ansP('p5',2,0)"><span class="cnum">3</span><span>100p+10q+r<br>= 9(11p+q)+(p+q+r)</span></button>
+      <button class="ch" onclick="ansP('p5',3,0)"><span class="cnum">4</span><span>100p+10q+r<br>= 3(100p+10q+r)</span></button>
     </div>
     <div class="fb-ok" id="fb-ok-p5"><span class="fb-icon">🎉</span><span class="fb-text">正解！もう迷いませんね！<span class="fb-sub">3(33p+3q)+(p+q+r) の形，完璧です ✨</span></span></div>
     <div class="fb-ng" id="fb-ng-p5"><span class="fb-icon">😢</span><span class="fb-text">おしい！<span class="fb-sub">💡 99p+9q+(p+q+r) をさらに 3 でくくりましょう</span></span><button class="reset-btn" onclick="resetP('p5')">🔄 もう一度</button></div>
